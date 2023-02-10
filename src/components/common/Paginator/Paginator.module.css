@@ -1,0 +1,17 @@
+.pages {
+  display: flex;
+  overflow-y: scroll;
+  gap: 5px;
+  padding-bottom: 20px;
+}
+
+.page {
+  padding: 5px;
+  border: none;
+  background-color: blanchedalmond;
+}
+
+.activePage {
+  font-weight: 700;
+  background-color: lightcoral;
+}

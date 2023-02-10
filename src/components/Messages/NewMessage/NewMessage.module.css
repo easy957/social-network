@@ -1,0 +1,19 @@
+.wrapper {
+  padding: 10px;
+}
+
+.input {
+  resize: none;
+  padding: 5px;
+}
+
+.button {
+  display: block;
+  padding: 5px 20px;
+  margin-left: auto;
+  margin-top: 10px;
+
+  background-color: blanchedalmond;
+  border: none;
+  cursor: pointer;
+}

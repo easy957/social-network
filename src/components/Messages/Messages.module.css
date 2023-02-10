@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  min-height: 100%;
+}
+
+.dialogs {
+  padding: 10px;
+  border-right: 5px solid blanchedalmond;
+}
+
+.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.messages {
+  padding: 10px;
+}
+
+.messagesContainer {
+  align-self: end;
+}

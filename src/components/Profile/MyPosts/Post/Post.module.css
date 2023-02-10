@@ -1,0 +1,23 @@
+.post {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.avatar {
+  width: 50px;
+  border-radius: 50%;
+}
+
+.text {
+  font-size: 18px;
+}
+
+.content {
+  padding-left: 10px;
+}
+
+.likes {
+  font-size: 14px;
+  color: darkslategrey;
+}

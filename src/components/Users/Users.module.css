@@ -1,0 +1,47 @@
+.item {
+  width: 100%;
+  background-color: blanchedalmond;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  overflow: hidden;
+}
+
+.photo {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  background-color: #fff;
+  border-radius: 30px;
+  margin-bottom: 10px;
+}
+
+.button {
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  display: block;
+  padding: 5px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:disabled {
+  background-color: blanchedalmond;
+  cursor: progress;
+}
+
+.profileInfo {
+  padding: 10px;
+  flex-grow: 1;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.status {
+  font-size: 14px;
+  color: darkslategray;
+}

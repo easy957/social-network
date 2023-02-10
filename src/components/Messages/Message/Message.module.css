@@ -1,0 +1,32 @@
+.message {
+  margin: 10px 0 0;
+  padding: 10px;
+  min-width: 200px;
+}
+
+.myItem {
+  padding-left: 15px;
+}
+
+.friendItem {
+  padding-right: 15px;
+}
+
+.friendMessage {
+  border-radius: 10px 10px 10px 0;
+  background-color: lightskyblue;
+}
+
+.myMessage {
+  background-color: blanchedalmond;
+  border-radius: 10px 10px 0 10px;
+}
+
+.name {
+  color: darkslategray;
+  font-size: 12px;
+}
+
+.textAlignEnd {
+  text-align: end;
+}
