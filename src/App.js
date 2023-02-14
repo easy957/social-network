@@ -7,7 +7,7 @@ import Settings from "./components/Settings/Settings";
 import SidebarContainer from "./components/Sidebar/SidebarContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import { connect } from "react-redux";
-import { setInitializedThunk } from "./redux/appReducer";
+import { setInitializedThunk } from "./redux/appReducer.ts";
 import Loader from "./components/common/Loader";
 
 const MessagesContainer = React.lazy(() =>
@@ -22,8 +22,18 @@ const ProfileContainer = React.lazy(() =>
 const Login = React.lazy(() => import("./components/Login/Login"));
 
 class App extends React.Component {
+  catchAllUnhandlenErrors = (event) => {
+    alert("Some error occured " + event.reason);
+  };
   componentDidMount() {
     this.props.setInitialized();
+    window.addEventListener("unhandledrejection", this.catchAllUnhandlenErrors);
+  }
+  componentWillUnmount() {
+    window.removeEventListener(
+      "unhandledrejection",
+      this.catchAllUnhandlenErrors
+    );
   }
   render() {
     if (!this.props.initialized) {
@@ -44,6 +54,7 @@ class App extends React.Component {
               <Route path="news" element={<News />} />
               <Route path="music" element={<Music />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="*" element={<h1>404 Page not found</h1>} />
             </Routes>
           </Suspense>
         </main>

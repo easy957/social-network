@@ -20,13 +20,25 @@ function Header({ isAuth, login, logout, photo }) {
       />
 
       <div className={s.user}>
-        {isAuth && <button onClick={logout}>Log out</button>}
-        {isAuth ? setUser() : <NavLink to="login">Login</NavLink>}
-        <img
-          className={s.photo}
-          src={photo ? photo : photoPlaceholder}
-          alt="Avatar"
-        />
+        {isAuth ? (
+          setUser()
+        ) : (
+          <NavLink className={s.logout} to="login">
+            Login
+          </NavLink>
+        )}
+        {isAuth && (
+          <>
+            <img
+              className={s.photo}
+              src={photo ? photo : photoPlaceholder}
+              alt="Avatar"
+            />
+            <button className={s.logout} onClick={logout}>
+              Log out
+            </button>
+          </>
+        )}
       </div>
     </header>
   );

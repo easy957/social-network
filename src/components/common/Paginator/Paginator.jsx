@@ -23,43 +23,61 @@ function Paginator({
 
   return (
     <>
-      <button
-        onClick={() => setCurrentPortion(currentPortion - 1)}
-        disabled={currentPortion === 1}
-      >
-        &larr;
-      </button>
-      <span>
-        Total pages: {totalPortions}, current page: {currentPortion}
-      </span>
-      <button
-        onClick={() => setCurrentPortion(currentPortion + 1)}
-        disabled={currentPortion === totalPortions}
-      >
-        &rarr;
-      </button>
-      <ul className={s.pages}>
-        {pages
-          .filter(
-            (page) => lesserPortionBorder < page && page < biggerPortionBorder
-          )
-          .map((page) => {
-            return (
-              <li key={page}>
-                <button
-                  onClick={() => {
-                    handlePageClick(page, pageSize);
-                  }}
-                  className={`${s.page} ${
-                    page === currentPage && s.activePage
-                  }`}
-                >
-                  {page}
-                </button>
-              </li>
-            );
-          })}
-      </ul>
+      <div className={s.setsWrapper}>
+        <button
+          className={s.pagesSetBtn}
+          onClick={() => setCurrentPortion(currentPortion - 10)}
+          disabled={currentPortion <= 10}
+        >
+          &#60;&#60;
+        </button>
+        <button
+          className={s.pagesSetBtn}
+          onClick={() => setCurrentPortion(currentPortion - 1)}
+          disabled={currentPortion === 1}
+        >
+          &#60;
+        </button>
+        {/* <span className={s.setsText}>
+          Total pages sets: {totalPortions}, current pages set: {currentPortion}
+        </span> */}
+        <ul className={s.pages}>
+          {pages
+            .filter(
+              (page) => lesserPortionBorder < page && page < biggerPortionBorder
+            )
+            .map((page) => {
+              return (
+                <li key={page}>
+                  <button
+                    onClick={() => {
+                      handlePageClick(page, pageSize);
+                    }}
+                    className={`${s.page} ${
+                      page === currentPage && s.activePage
+                    }`}
+                  >
+                    {page}
+                  </button>
+                </li>
+              );
+            })}
+        </ul>
+        <button
+          className={s.pagesSetBtn}
+          onClick={() => setCurrentPortion(currentPortion + 1)}
+          disabled={currentPortion === totalPortions}
+        >
+          &#62;
+        </button>
+        <button
+          className={s.pagesSetBtn}
+          onClick={() => setCurrentPortion(currentPortion + 10)}
+          disabled={currentPortion >= totalPortions - 10}
+        >
+          &#62; &#62;
+        </button>
+      </div>
     </>
   );
 }

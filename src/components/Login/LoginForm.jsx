@@ -3,7 +3,7 @@ import { FormControl } from "../common/FormControl/FormControl";
 import { required } from "../utils/validate";
 import s from "../common/FormControl/FormControl.module.css";
 
-function LoginForm({ handleSubmit, error }) {
+function LoginForm({ handleSubmit, error, captcha }) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
@@ -29,6 +29,19 @@ function LoginForm({ handleSubmit, error }) {
         <span>remember me</span>
       </div>
       {error && <p className={s.formError}>{error}</p>}
+      {captcha && (
+        <>
+          <img src={captcha} alt="Captcha" />
+          <div>
+            <Field
+              validate={[required]}
+              name="captcha"
+              component={FormControl}
+              placeholder="Enter sybmols"
+            />
+          </div>
+        </>
+      )}
       <button>Login</button>
     </form>
   );

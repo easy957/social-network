@@ -12,8 +12,6 @@ const MyPosts = ({ posts, addPost }) => {
     addPost(newPost);
   }
 
-  console.log("render");
-
   return (
     <div className={s.wrapper}>
       <h2>my posts</h2>

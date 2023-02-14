@@ -21,3 +21,10 @@
   width: 40px;
   border-radius: 50%;
 }
+
+.logout {
+  background-color: lightcoral;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}

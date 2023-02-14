@@ -1,20 +1,24 @@
 import { stopSubmit } from "redux-form";
-import { authAPI, profileAPI } from "../api/api";
+import { authAPI, profileAPI, securityAPI } from "../api/api";
 
 const SET_USER_DATA = "SET-USER-DATA";
 const CLEAR_USER_DATA = "CLEAR-USER-DATA";
 const SET_USER_ID = "SET-USER-ID";
 const SET_USER_PHOTO = "SET-USER-PHOTO";
+const SET_CAPTCHA = "SET-CAPTCHA";
 
 const initialState = {
-  id: null,
-  login: null,
-  email: null,
-  photo: null,
-  isAuth: false,
+  id: null as null | number,
+  login: null as null | string,
+  email: null as null | string,
+  photo: null as null | string,
+  isAuth: false as null | boolean,
+  captcha: null as null | string,
 };
 
-function authReducer(state = initialState, action) {
+export type InitialStateType = typeof initialState;
+
+function authReducer(state = initialState, action: any): InitialStateType {
   switch (action.type) {
     case SET_USER_DATA:
       return {
@@ -37,28 +41,59 @@ function authReducer(state = initialState, action) {
         ...state,
         photo: action.photo,
       };
+    case SET_CAPTCHA:
+      return {
+        ...state,
+        captcha: action.captcha,
+      };
 
     default:
       return state;
   }
 }
 
-export const setUserData = (data) => ({
+// Action creator
+
+type UserDataType = { email: string; id: number; login: string };
+type SetUserDataActionType = {
+  type: typeof SET_USER_DATA;
+  data: UserDataType;
+};
+export const setUserData = (data: UserDataType): SetUserDataActionType => ({
   type: SET_USER_DATA,
   data,
 });
-export const clearUserData = () => ({
+
+type ClearUserDataActionType = { type: typeof CLEAR_USER_DATA };
+export const clearUserData = (): ClearUserDataActionType => ({
   type: CLEAR_USER_DATA,
 });
 
-export const setUserId = (id) => ({
+type SetUserIdActionType = {
+  type: typeof SET_USER_ID;
+  id: number;
+};
+export const setUserId = (id: number): SetUserIdActionType => ({
   type: SET_USER_ID,
   id,
 });
 
-export const setUserPhoto = (photo) => ({
+type SetUserPhotoActionType = {
+  type: typeof SET_USER_PHOTO;
+  photo: string;
+};
+export const setUserPhoto = (photo: string): SetUserPhotoActionType => ({
   type: SET_USER_PHOTO,
   photo,
+});
+
+type SetCaptchaActionType = {
+  type: typeof SET_CAPTCHA;
+  captcha: string;
+};
+export const setCaptcha = (captcha: string): SetCaptchaActionType => ({
+  type: SET_CAPTCHA,
+  captcha,
 });
 
 //Thunk
@@ -79,6 +114,9 @@ export const loginThunk = (loginData) => (dispatch) => {
     if (data.resultCode === 0) {
       dispatch(fetchMeThunk());
     } else {
+      if (data.resultCode === 10) {
+        dispatch(getCaptchaThunk());
+      }
       const message =
         data.messages.length > 0 ? data.messages[0] : "Something went wrong.";
       dispatch(stopSubmit("login", { _error: message }));
@@ -91,6 +129,11 @@ export const logoutThunk = () => (dispatch) => {
     if (data.resultCode === 0) {
       dispatch(clearUserData());
     }
+  });
+};
+export const getCaptchaThunk = () => (dispatch) => {
+  securityAPI.getCaptcha().then((data) => {
+    dispatch(setCaptcha(data.url));
   });
 };
 

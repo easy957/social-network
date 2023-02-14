@@ -9,7 +9,6 @@
   padding: 15px;
   background-color: blanchedalmond;
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
 }
 
@@ -20,12 +19,27 @@
 .photo {
   width: 300px;
   object-fit: cover;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .links {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+}
+
+.link {
+  color: black;
+  text-transform: capitalize;
+}
+
+.link:visited {
+  color: black;
+}
+
+.aboutMe {
+  margin-bottom: 10px;
 }
 
 .status {
@@ -36,4 +50,31 @@
 
 .statusInput {
   margin-bottom: 20px;
+}
+
+.uploadPhoto {
+  display: block;
+  width: fit-content;
+  cursor: pointer;
+  background-color: #fff;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.uploadPhoto input {
+  display: none;
+}
+
+.editProfile {
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  background-color: #fff;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.editButtons {
+  display: flex;
+  justify-content: space-between;
 }

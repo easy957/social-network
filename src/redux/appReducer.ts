@@ -1,12 +1,14 @@
-import { fetchMeThunk } from "./authReducer";
+import { fetchMeThunk } from "./authReducer.ts";
 
 const SET_INITIALIZED = "SET-INITIALIZED";
 
 const initialState = {
-  initialized: false,
+  initialized: false as boolean,
 };
 
-function appReducer(state = initialState, action) {
+export type InitialStateType = typeof initialState;
+
+function appReducer(state = initialState, action: any): InitialStateType {
   switch (action.type) {
     case SET_INITIALIZED:
       return {
@@ -19,7 +21,9 @@ function appReducer(state = initialState, action) {
   }
 }
 
-export const setInitialized = () => ({
+type SetInitializedActionType = { type: typeof SET_INITIALIZED };
+
+export const setInitialized = (): SetInitializedActionType => ({
   type: SET_INITIALIZED,
 });
 

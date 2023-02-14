@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.wrapper span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.fieldsContainer {
+  margin-bottom: 10px;
+}
+
+.lookingForContainer {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.lookingForInput {
+  margin-left: 20px;
+  transform: scale(1.2);
+}
+
+.saveBtn {
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}

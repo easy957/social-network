@@ -34,9 +34,22 @@ export const profileAPI = {
     return API.get(`profile/status/${id}`).then((response) => response.data);
   },
   updateStatus(status) {
-    return API.put(`profile/status`, { status: status }).then(
+    return API.put(`profile/status`, { status }).then(
       (response) => response.data
     );
+  },
+  updateProfile(profile) {
+    return API.put(`profile`, profile).then((response) => response.data);
+  },
+  uploadPhoto(photo) {
+    let data = new FormData();
+    data.append("image", photo);
+    console.log(data);
+    return API.put(`profile/photo`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }).then((response) => response.data);
   },
 };
 
@@ -45,12 +58,23 @@ export const authAPI = {
     return API.get("auth/me").then((response) => response.data);
   },
 
-  login({ email, password, rememberMe }) {
-    return API.post("auth/login", { email, password, rememberMe }).then(
-      (response) => response.data
-    );
+  login({ email, password, rememberMe, captcha }) {
+    return API.post("auth/login", {
+      email,
+      password,
+      rememberMe,
+      captcha,
+    }).then((response) => response.data);
   },
   logout() {
     return API.delete("auth/login").then((response) => response.data);
+  },
+};
+
+export const securityAPI = {
+  getCaptcha() {
+    return API.get("security/get-captcha-url").then(
+      (response) => response.data
+    );
   },
 };
