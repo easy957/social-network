@@ -1,4 +1,4 @@
-import { fetchMeThunk } from "./authReducer.ts";
+import { fetchMeThunk } from "./authReducer";
 
 const SET_INITIALIZED = "SET-INITIALIZED";
 
@@ -29,7 +29,7 @@ export const setInitialized = (): SetInitializedActionType => ({
 
 //Thunk
 
-export const setInitializedThunk = () => (dispatch) => {
+export const setInitializedThunk = () => (dispatch: any) => {
   const promiseMe = dispatch(fetchMeThunk());
   Promise.all([promiseMe]).then(() => {
     dispatch(setInitialized());

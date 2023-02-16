@@ -173,19 +173,19 @@ export const setEditMode = (editMode: boolean): SetEditModeActionType => ({
 
 // THUNK
 
-export const getUserByIdThunk = (userId: number) => (dispatch) => {
+export const getUserByIdThunk = (userId: number) => (dispatch: any) => {
   profileAPI.fetchProfile(userId).then((data) => {
     dispatch(setCurrentProfile(data));
   });
 };
 
-export const getStatusByIdThunk = (userId: number) => (dispatch) => {
+export const getStatusByIdThunk = (userId: number) => (dispatch: any) => {
   profileAPI.fetchStatus(userId).then((data) => {
     dispatch(setStatus(data));
   });
 };
 
-export const updateStatusThunk = (status: string) => (dispatch) => {
+export const updateStatusThunk = (status: string) => (dispatch: any) => {
   profileAPI.updateStatus(status).then((data) => {
     if (data.resultCode === 0) {
       dispatch(setStatus(status));
@@ -193,7 +193,7 @@ export const updateStatusThunk = (status: string) => (dispatch) => {
   });
 };
 
-export const uploadPhotoThunk = (photo) => (dispatch) => {
+export const uploadPhotoThunk = (photo: any) => (dispatch: any) => {
   profileAPI.uploadPhoto(photo).then((data) => {
     if (data.resultCode === 0) {
       dispatch(setCurrentProfilePhoto(data.data.photos));
@@ -202,7 +202,7 @@ export const uploadPhotoThunk = (photo) => (dispatch) => {
 };
 
 export const updateProfileThunk =
-  (profile: ProfileType) => (dispatch, getState) => {
+  (profile: ProfileType) => (dispatch: any, getState: any) => {
     profileAPI.updateProfile(profile).then((data) => {
       const userId = getState().auth.id;
       if (data.resultCode === 0) {

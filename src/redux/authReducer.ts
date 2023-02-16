@@ -98,7 +98,7 @@ export const setCaptcha = (captcha: string): SetCaptchaActionType => ({
 
 //Thunk
 
-export const fetchMeThunk = () => (dispatch) => {
+export const fetchMeThunk = () => (dispatch: any) => {
   return authAPI.me().then((data) => {
     if (data.resultCode === 0) {
       dispatch(setUserData(data.data));
@@ -109,7 +109,7 @@ export const fetchMeThunk = () => (dispatch) => {
   });
 };
 
-export const loginThunk = (loginData) => (dispatch) => {
+export const loginThunk = (loginData: any) => (dispatch: any) => {
   authAPI.login(loginData).then((data) => {
     if (data.resultCode === 0) {
       dispatch(fetchMeThunk());
@@ -124,14 +124,14 @@ export const loginThunk = (loginData) => (dispatch) => {
   });
 };
 
-export const logoutThunk = () => (dispatch) => {
+export const logoutThunk = () => (dispatch: any) => {
   authAPI.logout().then((data) => {
     if (data.resultCode === 0) {
       dispatch(clearUserData());
     }
   });
 };
-export const getCaptchaThunk = () => (dispatch) => {
+export const getCaptchaThunk = () => (dispatch: any) => {
   securityAPI.getCaptcha().then((data) => {
     dispatch(setCaptcha(data.url));
   });
