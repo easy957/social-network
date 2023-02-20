@@ -1,12 +1,4 @@
-import React, {
-  ChangeEvent,
-  DetailedHTMLProps,
-  FocusEvent,
-  FormEvent,
-  HTMLAttributes,
-  MouseEvent,
-  MouseEventHandler,
-} from "react";
+import React, { FocusEvent, FormEvent, MouseEvent } from "react";
 import s from "./ProfileInfo.module.css";
 
 type PropsType = {
