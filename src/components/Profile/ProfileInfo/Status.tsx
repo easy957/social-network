@@ -1,13 +1,31 @@
-import React from "react";
+import React, {
+  ChangeEvent,
+  DetailedHTMLProps,
+  FocusEvent,
+  FormEvent,
+  HTMLAttributes,
+  MouseEvent,
+  MouseEventHandler,
+} from "react";
 import s from "./ProfileInfo.module.css";
 
-class Status extends React.Component {
-  state = {
+type PropsType = {
+  status: string;
+  updateStatus: (value: string) => void;
+};
+
+type StateType = {
+  editMode: boolean;
+  inputValue: string;
+};
+
+class Status extends React.Component<PropsType, StateType> {
+  state: StateType = {
     editMode: false,
     inputValue: this.props.status,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: PropsType, prevState: StateType) {
     if (prevProps.status !== this.props.status) {
       this.setState({
         inputValue: this.props.status,
@@ -23,13 +41,15 @@ class Status extends React.Component {
     }
   }
 
-  toggleEditMode = (e) => {
+  toggleEditMode = (
+    e: FocusEvent<HTMLInputElement> | MouseEvent<HTMLParagraphElement>
+  ) => {
     this.setState({
       editMode: !this.state.editMode,
     });
   };
 
-  onInputChange(e) {
+  onInputChange(e: FormEvent<HTMLInputElement>) {
     this.setState({
       inputValue: e.currentTarget.value,
     });

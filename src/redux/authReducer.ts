@@ -98,15 +98,14 @@ export const setCaptcha = (captcha: string): SetCaptchaActionType => ({
 
 //Thunk
 
-export const fetchMeThunk = () => (dispatch: any) => {
-  return authAPI.me().then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(setUserData(data.data));
-      profileAPI.fetchProfile(data.data.id).then((data) => {
-        dispatch(setUserPhoto(data.photos.small));
-      });
-    }
-  });
+export const fetchMeThunk = () => async (dispatch: any) => {
+  const data = await authAPI.me();
+  if (data.resultCode === 0) {
+    dispatch(setUserData(data.data));
+    profileAPI.fetchProfile(data.data.id).then((data_2) => {
+      dispatch(setUserPhoto(data_2.photos.small));
+    });
+  }
 };
 
 export const loginThunk = (loginData: any) => (dispatch: any) => {
@@ -131,6 +130,7 @@ export const logoutThunk = () => (dispatch: any) => {
     }
   });
 };
+
 export const getCaptchaThunk = () => (dispatch: any) => {
   securityAPI.getCaptcha().then((data) => {
     dispatch(setCaptcha(data.url));

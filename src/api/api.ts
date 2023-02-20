@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ProfileType } from "../redux/types";
 
 const API = axios.create({
   withCredentials: true,
@@ -15,33 +16,31 @@ export const usersAPI = {
     );
   },
 
-  fetchToggleFollow(id, followed) {
+  fetchToggleFollow(followed: boolean, id: number) {
     if (!followed) {
-      return API.post(`follow/${id}`).then((response) => response.data);
+      return API.post(`follow/${id}`).then((response) => response?.data);
     }
 
-    if (followed) {
-      return API.delete(`follow/${id}`).then((response) => response.data);
-    }
+    return API.delete(`follow/${id}`).then((response) => response?.data);
   },
 };
 
 export const profileAPI = {
-  fetchProfile(id) {
+  fetchProfile(id: number) {
     return API.get(`profile/${id}`).then((response) => response.data);
   },
-  fetchStatus(id) {
+  fetchStatus(id: number) {
     return API.get(`profile/status/${id}`).then((response) => response.data);
   },
-  updateStatus(status) {
+  updateStatus(status: string) {
     return API.put(`profile/status`, { status }).then(
       (response) => response.data
     );
   },
-  updateProfile(profile) {
+  updateProfile(profile: ProfileType) {
     return API.put(`profile`, profile).then((response) => response.data);
   },
-  uploadPhoto(photo) {
+  uploadPhoto(photo: any) {
     let data = new FormData();
     data.append("image", photo);
     console.log(data);
@@ -53,12 +52,18 @@ export const profileAPI = {
   },
 };
 
+type AuthLoginProps = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha: string;
+};
 export const authAPI = {
   me() {
     return API.get("auth/me").then((response) => response.data);
   },
 
-  login({ email, password, rememberMe, captcha }) {
+  login({ email, password, rememberMe, captcha }: AuthLoginProps) {
     return API.post("auth/login", {
       email,
       password,

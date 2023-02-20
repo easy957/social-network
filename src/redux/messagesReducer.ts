@@ -1,7 +1,29 @@
 const SEND_MESSAGE = "SEND-MESSAGE";
 
-export const sendMessage = (message) => ({ type: SEND_MESSAGE, message });
+type SendMessageActionType = {
+  type: typeof SEND_MESSAGE;
+  message: string;
+};
+export const sendMessage = (message: string): SendMessageActionType => ({
+  type: SEND_MESSAGE,
+  message,
+});
 
+// type UserType = {
+//   id: number;
+//   user: string;
+// };
+// type MessageType = {
+//   id: number;
+//   text: string;
+//   sentByMe: boolean;
+// };
+// type InitialStateType = {
+//   users: Array<UserType>;
+//   messages: Array<MessageType>;
+// };
+
+type InitialStateType = typeof initialState;
 const initialState = {
   users: [
     {
@@ -36,7 +58,7 @@ const initialState = {
   ],
 };
 
-function messagesReducer(state = initialState, action) {
+function messagesReducer(state = initialState, action: any): InitialStateType {
   switch (action.type) {
     case SEND_MESSAGE:
       const newMessage = {
@@ -48,7 +70,7 @@ function messagesReducer(state = initialState, action) {
       return {
         ...state,
         messages: [...state.messages, newMessage],
-        newMessageText: "",
+        // newMessageText: "",
       };
 
     default:

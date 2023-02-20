@@ -4,6 +4,18 @@ import userPhoto from "../../assets/images/profilePicture.webp";
 import { NavLink } from "react-router-dom";
 import Loader from "../common/Loader";
 import Paginator from "../common/Paginator/Paginator";
+import { UserType } from "../../redux/types";
+
+type PropsType = {
+  getCurrentPageUsers: (currentPage: number, pageSize: number) => void;
+  toggleFollow: (id: number, followed: boolean) => void;
+  users: Array<UserType>;
+  currentPage: number;
+  isLoading: boolean;
+  areFetchingFollow: Array<number>;
+  totalUsersCount: number;
+  pageSize: number;
+};
 
 function Users({
   getCurrentPageUsers,
@@ -14,9 +26,8 @@ function Users({
   areFetchingFollow,
   totalUsersCount,
   pageSize,
-  // setPages,
-}) {
-  function setButtonStatus(id) {
+}: PropsType) {
+  function setButtonStatus(id: number) {
     return areFetchingFollow.some((userId) => userId === id);
   }
 

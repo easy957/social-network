@@ -12,26 +12,17 @@ import {
   getUsers,
 } from "../../redux/usersSelector";
 import Users from "./Users";
+import { UserType } from "../../redux/types";
+import { AppStateType } from "../../redux/redux-store";
 
-class UsersContainer extends React.Component {
+class UsersContainer extends React.Component<
+  MapStatePropsType & MapDispatchPropsType
+> {
   componentDidMount() {
     if (this.props.users.length === 0) {
-      this.props.getUsersThunk(1, this.props.pageSize);
+      this.props.getUsersThunk(this.props.currentPage, this.props.pageSize);
     }
   }
-
-  // getPages() {
-  //   let totalPages = Math.ceil(
-  //     this.props.totalUsersCount / this.props.pageSize
-  //   );
-  //   let pages = [];
-  //   for (let i = 1; i <= totalPages; i++) {
-  //     if (pages.length < 200) {
-  //       pages.push(i);
-  //     }
-  //   }
-  //   return pages;
-  // }
 
   render() {
     return (
@@ -45,14 +36,26 @@ class UsersContainer extends React.Component {
           areFetchingFollow={this.props.areFetchingFollow}
           totalUsersCount={this.props.totalUsersCount}
           pageSize={this.props.pageSize}
-          // setPages={this.getPages.bind(this)}
         />
       </>
     );
   }
 }
+type MapStatePropsType = {
+  users: Array<UserType>;
+  currentPage: number;
+  pageSize: number;
+  isLoading: boolean;
+  areFetchingFollow: Array<number>;
+  totalUsersCount: number;
+};
 
-function mapStateToProps(state) {
+type MapDispatchPropsType = {
+  getUsersThunk: (currentPage: number, pageSize: number) => void;
+  toggleFollowThunk: (id: number, followed: boolean) => void;
+};
+
+function mapStateToProps(state: AppStateType) {
   return {
     // users: getUsersReselectLib(state),
     users: getUsers(state),
@@ -66,8 +69,11 @@ function mapStateToProps(state) {
 
 export default compose(
   withAuthRedirect,
-  connect(mapStateToProps, {
-    getUsersThunk,
-    toggleFollowThunk,
-  })
+  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(
+    mapStateToProps,
+    {
+      getUsersThunk,
+      toggleFollowThunk,
+    }
+  )
 )(UsersContainer);

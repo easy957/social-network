@@ -1,3 +1,4 @@
+type InitialStateType = typeof initialState;
 const initialState = {
   friends: [
     {
@@ -21,7 +22,7 @@ const initialState = {
   ],
 };
 
-function sidebarReducer(state = initialState, action) {
+function sidebarReducer(state = initialState, action: any): InitialStateType {
   return state;
 }
 

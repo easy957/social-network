@@ -1,5 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import s from "./Paginator.module.css";
+
+type PropsType = {
+  totalUsersCount: number;
+  handlePageClick: (page: number, pageSize: number) => void;
+  pageSize: number;
+  currentPage: number;
+  portionSize?: number;
+};
 
 function Paginator({
   totalUsersCount,
@@ -7,9 +15,9 @@ function Paginator({
   pageSize = 20,
   currentPage = 1,
   portionSize = 20,
-}) {
+}: PropsType) {
   const pagesCount = Math.ceil(totalUsersCount / pageSize);
-  const pages = [];
+  const pages: Array<number> = [];
   for (let i = 1; i <= pagesCount; i++) {
     pages.push(i);
   }
