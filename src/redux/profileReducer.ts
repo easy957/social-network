@@ -147,13 +147,13 @@ export const setEditMode = (editMode: boolean): SetEditModeActionType => ({
 
 // THUNK
 
-export const getUserByIdThunk = (userId: number) => (dispatch: any) => {
+export const getUserByIdThunk = (userId: string) => (dispatch: any) => {
   profileAPI.fetchProfile(userId).then((data) => {
     dispatch(setCurrentProfile(data));
   });
 };
 
-export const getStatusByIdThunk = (userId: number) => (dispatch: any) => {
+export const getStatusByIdThunk = (userId: string) => (dispatch: any) => {
   profileAPI.fetchStatus(userId).then((data) => {
     dispatch(setStatus(data));
   });

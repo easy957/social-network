@@ -8,25 +8,45 @@ import {
   updateProfileThunk,
   updateStatusThunk,
   uploadPhotoThunk,
-} from "../../redux/profileReducer.ts";
+} from "../../redux/profileReducer";
 import React from "react";
 import withRouter from "../common/withRouter";
 import { compose } from "redux";
 import withAuthRedirect from "../../HOC/withAuthRedirect";
+import { ProfileType, RouterPropsType } from "../../redux/types";
+import { AppStateType } from "../../redux/redux-store";
 
-class ProfileContainer extends React.Component {
+type MapStatePropsType = {
+  profile: ProfileType | null;
+  status: string | null;
+  myId: string | null;
+  editMode: boolean;
+};
+
+type MapDispatchPropsType = {
+  getUserById: (id: string) => void;
+  getStatusById: (id: string) => void;
+  uploadPhoto: (photo: any) => void;
+  toggleEditMode: (editMode: boolean) => void;
+  updateProfile: (profile: ProfileType) => void;
+  updateStatus: (status: string) => void;
+};
+
+type PropsType = MapStatePropsType & MapDispatchPropsType & RouterPropsType;
+
+class ProfileContainer extends React.Component<PropsType> {
   componentDidMount() {
     this.setProfile();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: PropsType) {
     if (prevProps.router.params.userId !== this.props.router.params.userId) {
       this.setProfile();
     }
   }
 
   setProfile() {
-    let userId = this.props.router.params.userId;
+    let userId: string | null | undefined = this.props.router.params.userId;
     if (!userId) {
       userId = this.props.myId;
       if (!userId) {
@@ -56,7 +76,7 @@ class ProfileContainer extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: AppStateType): MapStatePropsType {
   return {
     profile: state.profilePage.currentProfile,
     status: state.profilePage.status,
@@ -67,13 +87,16 @@ function mapStateToProps(state) {
 
 export default compose(
   withAuthRedirect,
-  connect(mapStateToProps, {
-    getUserById: getUserByIdThunk,
-    getStatusById: getStatusByIdThunk,
-    updateStatus: updateStatusThunk,
-    uploadPhoto: uploadPhotoThunk,
-    toggleEditMode: setEditMode,
-    updateProfile: updateProfileThunk,
-  }),
+  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(
+    mapStateToProps,
+    {
+      getUserById: getUserByIdThunk,
+      getStatusById: getStatusByIdThunk,
+      updateStatus: updateStatusThunk,
+      uploadPhoto: uploadPhotoThunk,
+      toggleEditMode: setEditMode,
+      updateProfile: updateProfileThunk,
+    }
+  ),
   withRouter
 )(ProfileContainer);

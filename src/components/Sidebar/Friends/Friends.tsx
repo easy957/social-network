@@ -1,6 +1,11 @@
+import { FriendType } from "../../../redux/types";
 import s from "./Friends.module.css";
 
-function Friends({ friendsState }) {
+type PropsType = {
+  friendsState: Array<FriendType>;
+};
+
+function Friends({ friendsState }: PropsType) {
   return (
     <div className={s.wrapper}>
       <p className={s.title}>Friends</p>

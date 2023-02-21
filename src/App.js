@@ -7,7 +7,7 @@ import Settings from "./components/Settings/Settings";
 import SidebarContainer from "./components/Sidebar/SidebarContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import { connect } from "react-redux";
-import { setInitializedThunk } from "./redux/appReducer.ts";
+import { setInitializedThunk } from "./redux/appReducer";
 import Loader from "./components/common/Loader";
 
 const MessagesContainer = React.lazy(() =>

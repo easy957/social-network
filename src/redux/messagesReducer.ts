@@ -43,17 +43,17 @@ const initialState = {
     {
       id: 1,
       text: "Hi!",
-      sentByMe: true,
+      IsSentByMe: true,
     },
     {
       id: 2,
       text: "How are you?",
-      sentByMe: true,
+      IsSentByMe: true,
     },
     {
       id: 3,
       text: "React is cool.",
-      sentByMe: false,
+      IsSentByMe: false,
     },
   ],
 };
@@ -64,7 +64,7 @@ function messagesReducer(state = initialState, action: any): InitialStateType {
       const newMessage = {
         id: state.messages.length + 1,
         text: action.message,
-        sentByMe: true,
+        IsSentByMe: true,
       };
 
       return {

@@ -4,8 +4,15 @@ import { FormControl } from "../../common/FormControl/FormControl";
 import { required } from "../../utils/validate";
 import formStyles from "../../common/FormControl/FormControl.module.css";
 import s from "./ProfileEditForm.module.css";
+import { ProfileType } from "../../../redux/types";
 
-function ProfileEditForm({ handleSubmit, profile, error }) {
+type PropsType = {
+  handleSubmit: () => void;
+  profile: ProfileType;
+  error: string;
+};
+
+function ProfileEditForm({ handleSubmit, profile, error }: PropsType) {
   const [lookingForAJob, setLookingForAJob] = useState(profile.lookingForAJob);
 
   function setLinks() {

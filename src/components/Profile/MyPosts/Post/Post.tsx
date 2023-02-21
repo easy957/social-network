@@ -1,6 +1,11 @@
 import s from "./Post.module.css";
 
-function Post({ message, likesCount }) {
+type PropsType = {
+  message: string;
+  likesCount: number;
+};
+
+function Post({ message, likesCount }: PropsType) {
   return (
     <li className={s.post}>
       <img

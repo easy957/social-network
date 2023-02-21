@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import { FocusEvent, useEffect, useState } from "react";
 import s from "./ProfileInfo.module.css";
 
-function Status({ status, updateStatus }) {
+type PropsType = {
+  status: string;
+  updateStatus: (value: string) => void;
+};
+
+function Status({ status, updateStatus }: PropsType) {
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(status);
 
@@ -16,7 +21,7 @@ function Status({ status, updateStatus }) {
     setEditMode(!editMode);
   }
 
-  function onStatusInput({ currentTarget }) {
+  function onStatusInput({ currentTarget }: FocusEvent<HTMLInputElement>) {
     setValue(currentTarget.value);
   }
 

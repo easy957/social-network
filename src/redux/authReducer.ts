@@ -8,7 +8,7 @@ const SET_USER_PHOTO = "SET-USER-PHOTO";
 const SET_CAPTCHA = "SET-CAPTCHA";
 
 const initialState = {
-  id: null as null | number,
+  id: null as null | string,
   login: null as null | string,
   email: null as null | string,
   photo: null as null | string,
@@ -54,7 +54,7 @@ function authReducer(state = initialState, action: any): InitialStateType {
 
 // Action creator
 
-type UserDataType = { email: string; id: number; login: string };
+type UserDataType = { email: string; id: string; login: string };
 type SetUserDataActionType = {
   type: typeof SET_USER_DATA;
   data: UserDataType;
@@ -71,9 +71,9 @@ export const clearUserData = (): ClearUserDataActionType => ({
 
 type SetUserIdActionType = {
   type: typeof SET_USER_ID;
-  id: number;
+  id: string;
 };
-export const setUserId = (id: number): SetUserIdActionType => ({
+export const setUserId = (id: string): SetUserIdActionType => ({
   type: SET_USER_ID,
   id,
 });

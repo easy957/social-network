@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { reduxForm } from "redux-form";
-import { loginThunk } from "../../redux/authReducer.ts";
+import { loginThunk } from "../../redux/authReducer";
 import LoginForm from "./LoginForm";
 
 const LoginReduxForm = reduxForm({

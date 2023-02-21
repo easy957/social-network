@@ -1,9 +1,14 @@
 import { NavLink } from "react-router-dom";
 import Friends from "./Friends/Friends";
 import s from "./Sidebar.module.css";
+import { InitialStateType } from "../../redux/sidebarReducer";
 
-function Sidebar({ state }) {
-  function activeClassSetter({ isActive }) {
+type PropsType = {
+  state: InitialStateType;
+};
+
+function Sidebar({ state }: PropsType) {
+  function activeClassSetter({ isActive }: { isActive: boolean }) {
     return isActive ? `${s.link} ${s.active}` : s.link;
   }
 

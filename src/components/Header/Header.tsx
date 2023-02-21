@@ -2,7 +2,14 @@ import s from "./Header.module.css";
 import photoPlaceholder from "../../assets/images/profilePicture.webp";
 import { NavLink } from "react-router-dom";
 
-function Header({ isAuth, login, logout, photo }) {
+type PropsType = {
+  login: string | null;
+  isAuth: boolean | null;
+  photo: string | null;
+  logout: () => void;
+};
+
+function Header({ isAuth, login, logout, photo }: PropsType) {
   function setUser() {
     return (
       <div>

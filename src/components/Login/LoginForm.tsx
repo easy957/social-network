@@ -3,7 +3,13 @@ import { FormControl } from "../common/FormControl/FormControl";
 import { required } from "../utils/validate";
 import s from "../common/FormControl/FormControl.module.css";
 
-function LoginForm({ handleSubmit, error, captcha }) {
+type PropsType = {
+  error: string;
+  captcha: string;
+  handleSubmit: () => void;
+};
+
+function LoginForm({ handleSubmit, error, captcha }: PropsType) {
   return (
     <form onSubmit={handleSubmit}>
       <div>

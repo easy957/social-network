@@ -55,7 +55,7 @@ type MapDispatchPropsType = {
   toggleFollowThunk: (id: number, followed: boolean) => void;
 };
 
-function mapStateToProps(state: AppStateType) {
+function mapStateToProps(state: AppStateType): MapStatePropsType {
   return {
     // users: getUsersReselectLib(state),
     users: getUsers(state),

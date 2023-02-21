@@ -6,7 +6,11 @@ import { maxLength, required } from "../../../utils/validate";
 const maxLength50 = maxLength(50);
 // const TextArea = ValidateFormElement(<textarea />);
 
-function NewPost({ handleSubmit }) {
+type PropsType = {
+  handleSubmit: () => void;
+};
+
+function NewPost({ handleSubmit }: PropsType) {
   return (
     <form onSubmit={handleSubmit}>
       <Field

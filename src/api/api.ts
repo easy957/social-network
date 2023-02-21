@@ -26,10 +26,10 @@ export const usersAPI = {
 };
 
 export const profileAPI = {
-  fetchProfile(id: number) {
+  fetchProfile(id: string) {
     return API.get(`profile/${id}`).then((response) => response.data);
   },
-  fetchStatus(id: number) {
+  fetchStatus(id: string) {
     return API.get(`profile/status/${id}`).then((response) => response.data);
   },
   updateStatus(status: string) {

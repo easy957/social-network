@@ -1,3 +1,5 @@
+import { NavigateFunction, Params } from "react-router-dom";
+
 export type PhotosType = {
   small: null | string;
   large: null | string;
@@ -35,3 +37,13 @@ export type UserType = {
   photos: PhotosType;
   followed: boolean;
 };
+
+export type RouterPropsType = {
+  router: {
+    location: Location;
+    navigate: NavigateFunction;
+    params: Readonly<Params<string>>;
+  };
+};
+
+export type FriendType = { id: number; name: string; profilePicture: string };

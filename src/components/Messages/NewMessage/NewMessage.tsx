@@ -5,7 +5,11 @@ import s from "./NewMessage.module.css";
 
 const maxLength300 = maxLength(300);
 
-function NewMessage({ handleSubmit }) {
+type PropsType = {
+  handleSubmit: () => void;
+};
+
+function NewMessage({ handleSubmit }: PropsType) {
   return (
     <form onSubmit={handleSubmit} className={s.wrapper}>
       <Field

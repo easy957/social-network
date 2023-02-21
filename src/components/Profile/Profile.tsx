@@ -1,6 +1,18 @@
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import MyPostsContainer from "./MyPosts/MyPostsContainer";
 import s from "./Profile.module.css";
+import { ProfileType } from "../../redux/types";
+
+type PropsType = {
+  profile: ProfileType | null;
+  status: string | null;
+  isOwner: boolean;
+  editMode: boolean;
+  uploadPhoto: (photo: any) => void;
+  toggleEditMode: (editMode: boolean) => void;
+  updateProfile: (profile: ProfileType) => void;
+  updateStatus: (status: string) => void;
+};
 
 function Profile({
   updateStatus,
@@ -11,7 +23,7 @@ function Profile({
   editMode,
   toggleEditMode,
   updateProfile,
-}) {
+}: PropsType) {
   return (
     <>
       <div className={s.wrapper}>

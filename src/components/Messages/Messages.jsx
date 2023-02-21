@@ -22,8 +22,8 @@ function Messages({ state, sendMessage }) {
       </ul>
       <div className={s.messagesContainer}>
         <ul className={s.messages}>
-          {state.messages.map(({ text, id, sentByMe }) => (
-            <Message key={id} message={text} sentByMe={sentByMe} />
+          {state.messages.map(({ text, id, IsSentByMe }) => (
+            <Message key={id} message={text} IsSentByMe={IsSentByMe} />
           ))}
         </ul>
         <MessageReduxForm onSubmit={onSendMessage} />
