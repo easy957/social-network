@@ -3,7 +3,7 @@ import s from "./Dialog.module.css";
 
 type PropsType = {
   name: string;
-  id: string;
+  id: number;
 };
 
 function Dialog({ name, id }: PropsType) {

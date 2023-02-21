@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Field } from "redux-form";
+import { Field, InjectedFormProps } from "redux-form";
 import { FormControl } from "../../common/FormControl/FormControl";
 import { required } from "../../utils/validate";
 import formStyles from "../../common/FormControl/FormControl.module.css";
@@ -7,12 +7,14 @@ import s from "./ProfileEditForm.module.css";
 import { ProfileType } from "../../../redux/types";
 
 type PropsType = {
-  handleSubmit: () => void;
   profile: ProfileType;
-  error: string;
 };
 
-function ProfileEditForm({ handleSubmit, profile, error }: PropsType) {
+function ProfileEditForm({
+  handleSubmit,
+  profile,
+  error,
+}: InjectedFormProps<ProfileType, PropsType> & PropsType) {
   const [lookingForAJob, setLookingForAJob] = useState(profile.lookingForAJob);
 
   function setLinks() {

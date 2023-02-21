@@ -4,10 +4,27 @@ import Status from "./StatusWithHooks";
 import Loader from "../../common/Loader";
 import ProfileEditForm from "./ProfileEditForm";
 import { reduxForm } from "redux-form";
+import { ProfileType } from "../../../redux/types";
+import { ChangeEvent } from "react";
 
-const ProfileReduxForm = reduxForm({
+type FormPropsType = {
+  profile: ProfileType;
+};
+
+const ProfileReduxForm = reduxForm<ProfileType, FormPropsType>({
   form: "edit-profile",
 })(ProfileEditForm);
+
+type PropsType = {
+  profile: ProfileType | null;
+  status: string | null;
+  isOwner: boolean;
+  editMode: boolean;
+  uploadPhoto: (photo: any) => void;
+  toggleEditMode: (editMode: boolean) => void;
+  updateProfile: (profile: ProfileType) => void;
+  updateStatus: (status: string) => void;
+};
 
 function ProfileInfo({
   updateStatus,
@@ -18,14 +35,16 @@ function ProfileInfo({
   editMode,
   toggleEditMode,
   updateProfile,
-}) {
+}: PropsType) {
   function setPhoto() {
+    if (!profile?.photos) return;
     return `${
       profile.photos.large === null ? photoPlaceHolder : profile.photos.large
     }`;
   }
 
   function setLinks() {
+    if (!profile) return;
     const entries = Object.entries(profile.contacts);
     return entries.map((link) => {
       if (link[1]) {
@@ -47,6 +66,7 @@ function ProfileInfo({
   }
 
   function setLookingForJob() {
+    if (!profile) return;
     if (profile.lookingForAJob) {
       return (
         <>
@@ -57,13 +77,13 @@ function ProfileInfo({
     }
   }
 
-  function handlePhotoChange(e) {
-    if (e.target.files.length) {
+  function handlePhotoChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files?.length) {
       uploadPhoto(e.target.files[0]);
     }
   }
 
-  function handleEditProfileSubmit(formData) {
+  function handleEditProfileSubmit(formData: ProfileType) {
     updateProfile(formData);
   }
 

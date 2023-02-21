@@ -1,47 +1,45 @@
 import { stopSubmit } from "redux-form";
-import { authAPI, profileAPI, securityAPI } from "../api/api";
-
-const SET_USER_DATA = "SET-USER-DATA";
-const CLEAR_USER_DATA = "CLEAR-USER-DATA";
-const SET_USER_ID = "SET-USER-ID";
-const SET_USER_PHOTO = "SET-USER-PHOTO";
-const SET_CAPTCHA = "SET-CAPTCHA";
+import { authAPI, profileAPI, resultCodeForCaptcha, resultCodes, securityAPI } from "../api/api";
+import { AuthLoginProps } from "./types";
+import { ThunkAction } from "redux-thunk";
+import { AppStateType } from "./redux-store";
 
 const initialState = {
-  id: null as null | string,
+  id: null as null | number,
   login: null as null | string,
   email: null as null | string,
   photo: null as null | string,
-  isAuth: false as null | boolean,
-  captcha: null as null | string,
+  isAuth: false,
+  captcha: "",
 };
 
 export type InitialStateType = typeof initialState;
+type ActionsTypes = any;
 
-function authReducer(state = initialState, action: any): InitialStateType {
+function authReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case SET_USER_DATA:
+    case "SET_USER_DATA":
       return {
         ...state,
         ...action.data,
         isAuth: true,
       };
-    case CLEAR_USER_DATA:
+    case "CLEAR_USER_DATA":
       return initialState;
 
-    case SET_USER_ID:
+    case "SET_USER_ID":
       return {
         ...state,
         id: action.id,
         isAuth: true,
       };
 
-    case SET_USER_PHOTO:
+    case "SET_USER_PHOTO":
       return {
         ...state,
         photo: action.photo,
       };
-    case SET_CAPTCHA:
+    case "SET_CAPTCHA":
       return {
         ...state,
         captcha: action.captcha,
@@ -54,86 +52,74 @@ function authReducer(state = initialState, action: any): InitialStateType {
 
 // Action creator
 
-type UserDataType = { email: string; id: string; login: string };
-type SetUserDataActionType = {
-  type: typeof SET_USER_DATA;
-  data: UserDataType;
-};
-export const setUserData = (data: UserDataType): SetUserDataActionType => ({
-  type: SET_USER_DATA,
-  data,
-});
+type UserDataType = { email: string; id: number; login: string };
 
-type ClearUserDataActionType = { type: typeof CLEAR_USER_DATA };
-export const clearUserData = (): ClearUserDataActionType => ({
-  type: CLEAR_USER_DATA,
-});
+export const actions = {
+  setUserData: (data: UserDataType) => ({
+    type: "SET_USER_DATA",
+    data,
+  }),
 
-type SetUserIdActionType = {
-  type: typeof SET_USER_ID;
-  id: string;
-};
-export const setUserId = (id: string): SetUserIdActionType => ({
-  type: SET_USER_ID,
-  id,
-});
+  clearUserData: () => ({
+    type: "CLEAR_USER_DATA",
+  }),
+  setUserId: (id: number) => ({
+    type: "SET_USER_ID",
+    id,
+  }),
 
-type SetUserPhotoActionType = {
-  type: typeof SET_USER_PHOTO;
-  photo: string;
-};
-export const setUserPhoto = (photo: string): SetUserPhotoActionType => ({
-  type: SET_USER_PHOTO,
-  photo,
-});
+  setUserPhoto: (photo: string | null) => ({
+    type: "SET_USER_PHOTO",
+    photo,
+  }),
 
-type SetCaptchaActionType = {
-  type: typeof SET_CAPTCHA;
-  captcha: string;
+  setCaptcha: (captcha: string) => ({
+    type: "SET_CAPTCHA",
+    captcha,
+  }),
 };
-export const setCaptcha = (captcha: string): SetCaptchaActionType => ({
-  type: SET_CAPTCHA,
-  captcha,
-});
 
 //Thunk
 
-export const fetchMeThunk = () => async (dispatch: any) => {
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+
+export const fetchMeThunk = (): ThunkType => async (dispatch) => {
   const data = await authAPI.me();
   if (data.resultCode === 0) {
-    dispatch(setUserData(data.data));
-    profileAPI.fetchProfile(data.data.id).then((data_2) => {
-      dispatch(setUserPhoto(data_2.photos.small));
+    dispatch(actions.setUserData(data.data));
+    profileAPI.fetchProfile(data.data.id).then((profileData) => {
+      dispatch(actions.setUserPhoto(profileData.photos.small));
     });
   }
 };
 
-export const loginThunk = (loginData: any) => (dispatch: any) => {
-  authAPI.login(loginData).then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(fetchMeThunk());
-    } else {
-      if (data.resultCode === 10) {
-        dispatch(getCaptchaThunk());
+export const loginThunk =
+  (loginData: AuthLoginProps): ThunkType =>
+  (dispatch) => {
+    authAPI.login(loginData).then((data) => {
+      if (data.resultCode === resultCodes.success) {
+        dispatch(fetchMeThunk());
+      } else {
+        if (data.resultCode === resultCodeForCaptcha.captchaIsRequired) {
+          dispatch(getCaptchaThunk());
+        }
+        const message = data.messages.length > 0 ? data.messages[0] : "Something went wrong.";
+        dispatch(stopSubmit("login", { _error: message }));
       }
-      const message =
-        data.messages.length > 0 ? data.messages[0] : "Something went wrong.";
-      dispatch(stopSubmit("login", { _error: message }));
-    }
-  });
-};
+    });
+  };
 
-export const logoutThunk = () => (dispatch: any) => {
+export const logoutThunk = (): ThunkType => (dispatch) => {
   authAPI.logout().then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(clearUserData());
+    if (data.resultCode === resultCodes.success) {
+      dispatch(actions.clearUserData());
     }
   });
 };
 
-export const getCaptchaThunk = () => (dispatch: any) => {
+export const getCaptchaThunk = (): ThunkType => (dispatch) => {
   securityAPI.getCaptcha().then((data) => {
-    dispatch(setCaptcha(data.url));
+    dispatch(actions.setCaptcha(data.url));
   });
 };
 

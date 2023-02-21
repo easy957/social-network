@@ -2,13 +2,19 @@ import { reduxForm } from "redux-form";
 import s from "./MyPosts.module.css";
 import NewPost from "./NewPost/NewPost";
 import Post from "./Post/Post";
+import { PostType } from "../../../redux/types";
 
-const NewPostForm = reduxForm({
+const NewPostForm = reduxForm<{ newPost: string }>({
   form: "newPost",
 })(NewPost);
 
-const MyPosts = ({ posts, addPost }) => {
-  function onPostSubmit({ newPost }) {
+type PropsType = {
+  posts: Array<PostType>;
+  addPost: (newPost: string) => void;
+};
+
+const MyPosts = ({ posts, addPost }: PropsType) => {
+  function onPostSubmit({ newPost }: { newPost: string }) {
     addPost(newPost);
   }
 

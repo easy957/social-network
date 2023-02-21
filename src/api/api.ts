@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ProfileType } from "../redux/types";
+import { AuthLoginProps, ProfileType, UserType } from "../redux/types";
 
 const API = axios.create({
   withCredentials: true,
@@ -9,77 +9,155 @@ const API = axios.create({
   },
 });
 
+export enum resultCodes {
+  success = 0,
+  error = 1,
+}
+export enum resultCodeForCaptcha {
+  captchaIsRequired = 10,
+}
+
+type UsersResponseType = {
+  items: Array<UserType>;
+  totalCount: number;
+  error: string;
+};
+
+type ToggleFollowResponseType = {
+  resultCode: resultCodes;
+  messages: Array<string>;
+  data: {};
+};
+
 export const usersAPI = {
-  fetchUsers(currentPage = 1, pageSize = 10) {
-    return API.get(`users?page=${currentPage}&count=${pageSize}`).then(
-      (response) => response.data
+  async fetchUsers(currentPage = 1, pageSize = 10) {
+    const response = await API.get<UsersResponseType>(
+      `users?page=${currentPage}&count=${pageSize}`
     );
+    return response.data;
   },
 
-  fetchToggleFollow(followed: boolean, id: number) {
+  async fetchToggleFollow(followed: boolean, id: number) {
     if (!followed) {
-      return API.post(`follow/${id}`).then((response) => response?.data);
+      const response = await API.post<ToggleFollowResponseType>(`follow/${id}`);
+      return response.data;
     }
 
-    return API.delete(`follow/${id}`).then((response) => response?.data);
+    const response_1 = await API.delete<ToggleFollowResponseType>(
+      `follow/${id}`
+    );
+    return response_1.data;
   },
+};
+
+type UpdateProfileDataResponseType = {
+  resultCode: resultCodes;
+  messages: Array<string>;
+  data: {};
+};
+type UpdateProfilePhotoResponseType = {
+  resultCode: resultCodes;
+  messages: Array<string>;
+  data: {
+    photos: {
+      small: string;
+      large: string;
+    };
+  };
 };
 
 export const profileAPI = {
-  fetchProfile(id: string) {
-    return API.get(`profile/${id}`).then((response) => response.data);
+  async fetchProfile(id: number | null) {
+    const response = await API.get<ProfileType>(`profile/${id}`);
+    return response.data;
   },
-  fetchStatus(id: string) {
-    return API.get(`profile/status/${id}`).then((response) => response.data);
+  async fetchStatus(id: number) {
+    const response = await API.get<string>(`profile/status/${id}`);
+    return response.data;
   },
-  updateStatus(status: string) {
-    return API.put(`profile/status`, { status }).then(
-      (response) => response.data
+  async updateStatus(status: string) {
+    const response = await API.put<UpdateProfileDataResponseType>(
+      `profile/status`,
+      {
+        status,
+      }
     );
+    return response.data;
   },
-  updateProfile(profile: ProfileType) {
-    return API.put(`profile`, profile).then((response) => response.data);
+  async updateProfile(profile: ProfileType) {
+    const response = await API.put<UpdateProfileDataResponseType>(
+      `profile`,
+      profile
+    );
+    return response.data;
   },
-  uploadPhoto(photo: any) {
+
+  async uploadPhoto(photo: any) {
     let data = new FormData();
     data.append("image", photo);
-    console.log(data);
-    return API.put(`profile/photo`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }).then((response) => response.data);
+    const response = await API.put<UpdateProfilePhotoResponseType>(
+      `profile/photo`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
   },
 };
 
-type AuthLoginProps = {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-  captcha: string;
+type MeResponseType = {
+  resultCode: resultCodes;
+  messages: Array<string>;
+  data: {
+    id: number;
+    email: string;
+    login: string;
+  };
 };
+type LoginResponseType = {
+  resultCode: resultCodes | resultCodeForCaptcha;
+  messages: Array<string>;
+  data: {
+    userId: number;
+  };
+};
+type LogoutResponseType = {
+  resultCode: resultCodes;
+  messages: Array<string>;
+  data: {};
+};
+
 export const authAPI = {
-  me() {
-    return API.get("auth/me").then((response) => response.data);
+  async me() {
+    const response = await API.get<MeResponseType>("auth/me");
+    return response.data;
   },
 
-  login({ email, password, rememberMe, captcha }: AuthLoginProps) {
-    return API.post("auth/login", {
+  async login({ email, password, rememberMe, captcha }: AuthLoginProps) {
+    const response = await API.post<LoginResponseType>("auth/login", {
       email,
       password,
       rememberMe,
       captcha,
-    }).then((response) => response.data);
+    });
+    return response.data;
   },
-  logout() {
-    return API.delete("auth/login").then((response) => response.data);
+  async logout() {
+    const response = await API.delete<LogoutResponseType>("auth/login");
+    return response.data;
   },
 };
 
+type GetCaptchaResponseType = { url: string };
+
 export const securityAPI = {
-  getCaptcha() {
-    return API.get("security/get-captcha-url").then(
-      (response) => response.data
+  async getCaptcha() {
+    const response = await API.get<GetCaptchaResponseType>(
+      "security/get-captcha-url"
     );
+    return response.data;
   },
 };

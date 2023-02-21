@@ -25,7 +25,10 @@ const initialState = {
   ],
 };
 
-function sidebarReducer(state = initialState, action: any): InitialStateType {
+function sidebarReducer(
+  state = initialState,
+  action: unknown
+): InitialStateType {
   return state;
 }
 

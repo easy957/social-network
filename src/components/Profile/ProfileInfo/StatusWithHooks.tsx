@@ -2,16 +2,16 @@ import { FocusEvent, useEffect, useState } from "react";
 import s from "./ProfileInfo.module.css";
 
 type PropsType = {
-  status: string;
+  status: string | null;
   updateStatus: (value: string) => void;
 };
 
 function Status({ status, updateStatus }: PropsType) {
   const [editMode, setEditMode] = useState(false);
-  const [value, setValue] = useState(status);
+  const [value, setValue] = useState(status ? status : "");
 
   useEffect(() => {
-    setValue(status);
+    setValue(status ? status : "");
   }, [status]);
 
   function toggleEditMode() {

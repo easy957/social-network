@@ -4,7 +4,7 @@ import s from "./Profile.module.css";
 import {
   getStatusByIdThunk,
   getUserByIdThunk,
-  setEditMode,
+  actions,
   updateProfileThunk,
   updateStatusThunk,
   uploadPhotoThunk,
@@ -19,13 +19,13 @@ import { AppStateType } from "../../redux/redux-store";
 type MapStatePropsType = {
   profile: ProfileType | null;
   status: string | null;
-  myId: string | null;
+  myId: number | null;
   editMode: boolean;
 };
 
 type MapDispatchPropsType = {
-  getUserById: (id: string) => void;
-  getStatusById: (id: string) => void;
+  getUserById: (id: number) => void;
+  getStatusById: (id: number) => void;
   uploadPhoto: (photo: any) => void;
   toggleEditMode: (editMode: boolean) => void;
   updateProfile: (profile: ProfileType) => void;
@@ -46,7 +46,9 @@ class ProfileContainer extends React.Component<PropsType> {
   }
 
   setProfile() {
-    let userId: string | null | undefined = this.props.router.params.userId;
+    let userId: number | null;
+    this.props.router.params.userId ? (userId = Number(this.props.router.params.userId)) : (userId = null);
+
     if (!userId) {
       userId = this.props.myId;
       if (!userId) {
@@ -87,16 +89,13 @@ function mapStateToProps(state: AppStateType): MapStatePropsType {
 
 export default compose(
   withAuthRedirect,
-  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(
-    mapStateToProps,
-    {
-      getUserById: getUserByIdThunk,
-      getStatusById: getStatusByIdThunk,
-      updateStatus: updateStatusThunk,
-      uploadPhoto: uploadPhotoThunk,
-      toggleEditMode: setEditMode,
-      updateProfile: updateProfileThunk,
-    }
-  ),
+  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
+    getUserById: getUserByIdThunk,
+    getStatusById: getStatusByIdThunk,
+    updateStatus: updateStatusThunk,
+    uploadPhoto: uploadPhotoThunk,
+    toggleEditMode: actions.setEditMode,
+    updateProfile: updateProfileThunk,
+  }),
   withRouter
 )(ProfileContainer);

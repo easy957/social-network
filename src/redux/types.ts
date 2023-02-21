@@ -47,3 +47,10 @@ export type RouterPropsType = {
 };
 
 export type FriendType = { id: number; name: string; profilePicture: string };
+
+export type AuthLoginProps = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha?: string;
+};

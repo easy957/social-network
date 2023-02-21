@@ -1,15 +1,13 @@
-import { Field } from "redux-form";
+import { Field, InjectedFormProps } from "redux-form";
 import { FormControl } from "../../common/FormControl/FormControl";
 import { maxLength, required } from "../../utils/validate";
 import s from "./NewMessage.module.css";
 
 const maxLength300 = maxLength(300);
 
-type PropsType = {
-  handleSubmit: () => void;
-};
-
-function NewMessage({ handleSubmit }: PropsType) {
+function NewMessage({
+  handleSubmit,
+}: InjectedFormProps<{ newMessage: string }>) {
   return (
     <form onSubmit={handleSubmit} className={s.wrapper}>
       <Field

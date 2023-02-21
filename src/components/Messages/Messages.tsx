@@ -3,13 +3,19 @@ import Message from "./Message/Message";
 import NewMessage from "./NewMessage/NewMessage";
 import s from "./Messages.module.css";
 import { reduxForm } from "redux-form";
+import { InitialStateType } from "../../redux/messagesReducer";
 
-const MessageReduxForm = reduxForm({
+const MessageReduxForm = reduxForm<{ newMessage: string }>({
   form: "newMessage",
 })(NewMessage);
 
-function Messages({ state, sendMessage }) {
-  function onSendMessage({ newMessage }) {
+type PropsType = {
+  state: InitialStateType;
+  sendMessage: (message: string) => void;
+};
+
+function Messages({ state, sendMessage }: PropsType) {
+  function onSendMessage({ newMessage }: { newMessage: string }) {
     sendMessage(newMessage);
   }
 

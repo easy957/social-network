@@ -1,16 +1,18 @@
+import { ThunkAction } from "redux-thunk";
 import { fetchMeThunk } from "./authReducer";
-
-const SET_INITIALIZED = "SET-INITIALIZED";
+import { AppStateType, InferActionsTypes } from "./redux-store";
 
 const initialState = {
-  initialized: false as boolean,
+  initialized: false,
 };
 
 export type InitialStateType = typeof initialState;
 
-function appReducer(state = initialState, action: any): InitialStateType {
+type ActionsTypes = InferActionsTypes<typeof actions>;
+
+function appReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case SET_INITIALIZED:
+    case "SET_INITIALIZED":
       return {
         ...state,
         initialized: true,
@@ -21,18 +23,19 @@ function appReducer(state = initialState, action: any): InitialStateType {
   }
 }
 
-type SetInitializedActionType = { type: typeof SET_INITIALIZED };
-
-export const setInitialized = (): SetInitializedActionType => ({
-  type: SET_INITIALIZED,
-});
+export const actions = {
+  setInitialized: () => ({
+    type: "SET_INITIALIZED",
+  }),
+};
 
 //Thunk
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
 
-export const setInitializedThunk = () => (dispatch: any) => {
+export const setInitializedThunk = (): ThunkType => (dispatch) => {
   const promiseMe = dispatch(fetchMeThunk());
   Promise.all([promiseMe]).then(() => {
-    dispatch(setInitialized());
+    dispatch(actions.setInitialized());
   });
 };
 

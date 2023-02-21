@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { compose } from "redux";
 import withAuthRedirect from "../../HOC/withAuthRedirect";
-import { sendMessage } from "../../redux/messagesReducer";
+import { actions } from "../../redux/messagesReducer";
 import Messages from "./Messages";
 import { AppStateType } from "../../redux/redux-store";
 
@@ -19,10 +19,7 @@ type MapDispatchPropsType = {
 export default compose(
   withAuthRedirect,
 
-  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(
-    mapStateToProps,
-    {
-      sendMessage,
-    }
-  )
+  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
+    sendMessage: actions.sendMessage,
+  })
 )(Messages);

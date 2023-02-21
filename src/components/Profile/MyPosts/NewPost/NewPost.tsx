@@ -1,16 +1,11 @@
 import React from "react";
-import { Field } from "redux-form";
+import { Field, InjectedFormProps } from "redux-form";
 import { FormControl } from "../../../common/FormControl/FormControl";
 import { maxLength, required } from "../../../utils/validate";
 
 const maxLength50 = maxLength(50);
-// const TextArea = ValidateFormElement(<textarea />);
 
-type PropsType = {
-  handleSubmit: () => void;
-};
-
-function NewPost({ handleSubmit }: PropsType) {
+function NewPost({ handleSubmit }: InjectedFormProps<{ newPost: string }>) {
   return (
     <form onSubmit={handleSubmit}>
       <Field

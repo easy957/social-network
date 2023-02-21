@@ -1,78 +1,46 @@
+import { ThunkAction } from "redux-thunk";
 import { usersAPI } from "../api/api";
-import { AppDispatchType } from "./redux-store";
+import { AppStateType, InferActionsTypes } from "./redux-store";
 import { UserType } from "./types";
 
-const TOGGLE_FOLLOW = "TOGGLE-FOLLOW";
-const SET_USERS = "SET-USERS";
-const SET_TOTAL_USERS_COUNT = "SET-TOTAL-USERS-COUNT";
-const SET_CURRENT_PAGE = "SET-CURRENT-PAGE";
-const TOGGLE_IS_LOADING = "TOGGLE-IS-LOADING";
-const IS_FETCHING_FOLLOW = "IS-FETCHING-FOLLOW";
+export const actions = {
+  toggleFollow: (id: number) =>
+    ({
+      type: "users/TOGGLE_FOLLOW",
+      id,
+    } as const),
 
-type ToggleFollowActionType = {
-  type: typeof TOGGLE_FOLLOW;
-  id: number;
-};
-export const toggleFollow = (id: number): ToggleFollowActionType => ({
-  type: TOGGLE_FOLLOW,
-  id,
-});
+  toggleIsFetchingFollow: (fetching: boolean, userId: number) =>
+    ({
+      type: "users/IS_FETCHING_FOLLOW",
+      fetching,
+      userId,
+    } as const),
 
-type ToggleIsFetchingFollowActionType = {
-  type: typeof IS_FETCHING_FOLLOW;
-  fetching: boolean;
-  userId: number;
-};
-export const toggleIsFetchingFollow = (
-  fetching: boolean,
-  userId: number
-): ToggleIsFetchingFollowActionType => ({
-  type: IS_FETCHING_FOLLOW,
-  fetching,
-  userId,
-});
+  setUsers: (users: Array<UserType>) =>
+    ({
+      type: "users/SET_USERS",
+      users,
+    } as const),
 
-type SetUsersActionType = {
-  type: typeof SET_USERS;
-  users: Array<UserType>;
-};
-export const setUsers = (users: Array<UserType>): SetUsersActionType => ({
-  type: SET_USERS,
-  users,
-});
+  setTotalUsersCount: (totalUsersCount: number) =>
+    ({
+      type: "users/SET_TOTAL_USERS_COUNT",
+      totalUsersCount,
+    } as const),
 
-type SetTotalUsersCountActionType = {
-  type: typeof SET_TOTAL_USERS_COUNT;
-  totalUsersCount: number;
-};
-export const setTotalUsersCount = (
-  totalUsersCount: number
-): SetTotalUsersCountActionType => ({
-  type: SET_TOTAL_USERS_COUNT,
-  totalUsersCount,
-});
+  setCurrentPage: (currentPage: number) =>
+    ({
+      type: "users/SET_CURRENT_PAGE",
+      currentPage,
+    } as const),
 
-type SetCurrentPageActionCreator = {
-  type: typeof SET_CURRENT_PAGE;
-  currentPage: number;
+  toggleIsLoading: (isLoading: boolean) =>
+    ({
+      type: "users/TOGGLE_IS_LOADING",
+      isLoading,
+    } as const),
 };
-export const setCurrentPage = (
-  currentPage: number
-): SetCurrentPageActionCreator => ({
-  type: SET_CURRENT_PAGE,
-  currentPage,
-});
-
-type ToggleIsLoadingActionType = {
-  type: typeof TOGGLE_IS_LOADING;
-  isLoading: boolean;
-};
-export const toggleIsLoading = (
-  isLoading: boolean
-): ToggleIsLoadingActionType => ({
-  type: TOGGLE_IS_LOADING,
-  isLoading,
-});
 
 type InitialStateType = typeof initialState;
 const initialState = {
@@ -84,9 +52,11 @@ const initialState = {
   areFetchingFollow: [] as Array<number>,
 };
 
-function usersReducer(state = initialState, action: any): InitialStateType {
+type ActionsTypes = InferActionsTypes<typeof actions>;
+
+function usersReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case TOGGLE_FOLLOW:
+    case "users/TOGGLE_FOLLOW":
       return {
         ...state,
         users: state.users.map((u) => {
@@ -100,7 +70,7 @@ function usersReducer(state = initialState, action: any): InitialStateType {
         }),
       };
 
-    case IS_FETCHING_FOLLOW:
+    case "users/IS_FETCHING_FOLLOW":
       return {
         ...state,
         areFetchingFollow: action.fetching
@@ -108,27 +78,27 @@ function usersReducer(state = initialState, action: any): InitialStateType {
           : state.areFetchingFollow.filter((u) => u !== action.userId),
       };
 
-    case SET_USERS:
+    case "users/SET_USERS":
       return {
         ...state,
         users: action.users,
       };
 
-    case SET_TOTAL_USERS_COUNT: {
+    case "users/SET_TOTAL_USERS_COUNT": {
       return {
         ...state,
         totalUsersCount: action.totalUsersCount,
       };
     }
 
-    case SET_CURRENT_PAGE: {
+    case "users/SET_CURRENT_PAGE": {
       return {
         ...state,
         currentPage: action.currentPage,
       };
     }
 
-    case TOGGLE_IS_LOADING: {
+    case "users/TOGGLE_IS_LOADING": {
       return {
         ...state,
         isLoading: action.isLoading,
@@ -141,24 +111,29 @@ function usersReducer(state = initialState, action: any): InitialStateType {
   }
 }
 
+// THUNK
+
+type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+
 export const getUsersThunk =
-  (pageNumber = 1, pageSize = 10) =>
-  (dispatch: AppDispatchType) => {
-    dispatch(toggleIsLoading(true));
+  (pageNumber = 1, pageSize = 10): ThunkType =>
+  (dispatch) => {
+    dispatch(actions.toggleIsLoading(true));
     usersAPI.fetchUsers(pageNumber, pageSize).then((data) => {
-      dispatch(setCurrentPage(pageNumber));
-      dispatch(toggleIsLoading(false));
-      dispatch(setUsers(data.items));
-      dispatch(setTotalUsersCount(data.totalCount));
+      dispatch(actions.setCurrentPage(pageNumber));
+      dispatch(actions.toggleIsLoading(false));
+      dispatch(actions.setUsers(data.items));
+      dispatch(actions.setTotalUsersCount(data.totalCount));
     });
   };
 
 export const toggleFollowThunk =
-  (id: number, followed: boolean) => (dispatch: AppDispatchType) => {
-    dispatch(toggleIsFetchingFollow(true, id));
+  (id: number, followed: boolean): ThunkType =>
+  (dispatch) => {
+    dispatch(actions.toggleIsFetchingFollow(true, id));
     usersAPI.fetchToggleFollow(followed, id).then(() => {
-      dispatch(toggleFollow(id));
-      dispatch(toggleIsFetchingFollow(false, id));
+      dispatch(actions.toggleFollow(id));
+      dispatch(actions.toggleIsFetchingFollow(false, id));
     });
   };
 

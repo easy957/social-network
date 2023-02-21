@@ -1,13 +1,11 @@
-const SEND_MESSAGE = "SEND-MESSAGE";
+import { InferActionsTypes } from "./redux-store";
 
-type SendMessageActionType = {
-  type: typeof SEND_MESSAGE;
-  message: string;
+export const actions = {
+  sendMessage: (message: string) => ({
+    type: "SEND_MESSAGE",
+    message,
+  }),
 };
-export const sendMessage = (message: string): SendMessageActionType => ({
-  type: SEND_MESSAGE,
-  message,
-});
 
 // type UserType = {
 //   id: number;
@@ -23,7 +21,7 @@ export const sendMessage = (message: string): SendMessageActionType => ({
 //   messages: Array<MessageType>;
 // };
 
-type InitialStateType = typeof initialState;
+export type InitialStateType = typeof initialState;
 const initialState = {
   users: [
     {
@@ -58,9 +56,11 @@ const initialState = {
   ],
 };
 
-function messagesReducer(state = initialState, action: any): InitialStateType {
+type ActionsTypes = InferActionsTypes<typeof actions>;
+
+function messagesReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case SEND_MESSAGE:
+    case "SEND_MESSAGE":
       const newMessage = {
         id: state.messages.length + 1,
         text: action.message,

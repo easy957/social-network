@@ -1,15 +1,18 @@
-import { Field } from "redux-form";
+import { Field, InjectedFormProps } from "redux-form";
 import { FormControl } from "../common/FormControl/FormControl";
 import { required } from "../utils/validate";
 import s from "../common/FormControl/FormControl.module.css";
+import { AuthLoginProps } from "../../redux/types";
 
 type PropsType = {
-  error: string;
   captcha: string;
-  handleSubmit: () => void;
 };
 
-function LoginForm({ handleSubmit, error, captcha }: PropsType) {
+function LoginForm({
+  handleSubmit,
+  error,
+  captcha,
+}: InjectedFormProps<AuthLoginProps, PropsType> & PropsType) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
