@@ -32,7 +32,7 @@ type ActionsTypes = InferActionsTypes<typeof actions>;
 
 function profileReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case "ADD_POST":
+    case "profile/ADD_POST":
       const newPost = {
         id: state.posts.length + 1,
         text: action.newPostText,
@@ -44,19 +44,19 @@ function profileReducer(state = initialState, action: ActionsTypes): InitialStat
         posts: [...state.posts, newPost],
       };
 
-    case "DELETE_POST":
+    case "profile/DELETE_POST":
       return {
         ...state,
         posts: [...state.posts.filter((post) => post.id !== action.id)],
       };
 
-    case "SET_CURRENT_PROFILE":
+    case "profile/SET_CURRENT_PROFILE":
       return {
         ...state,
         currentProfile: action.profile,
       };
 
-    case "SET_CURRENT_PROFILE_PHOTO":
+    case "profile/SET_CURRENT_PROFILE_PHOTO":
       return {
         ...state,
         currentProfile: {
@@ -65,13 +65,13 @@ function profileReducer(state = initialState, action: ActionsTypes): InitialStat
         } as ProfileType,
       };
 
-    case "SET_STATUS":
+    case "profile/SET_STATUS":
       return {
         ...state,
         status: action.status,
       };
 
-    case "SET_EDIT_MODE":
+    case "profile/SET_EDIT_MODE":
       return {
         ...state,
         editMode: action.editMode,
@@ -87,35 +87,35 @@ function profileReducer(state = initialState, action: ActionsTypes): InitialStat
 export const actions = {
   addPost: (newPostText: string) =>
     ({
-      type: "ADD_POST",
+      type: "profile/ADD_POST",
       newPostText,
     } as const),
   deletePost: (id: number) =>
     ({
-      type: "DELETE_POST",
+      type: "profile/DELETE_POST",
       id,
     } as const),
 
   setCurrentProfile: (profile: ProfileType) =>
     ({
-      type: "SET_CURRENT_PROFILE",
+      type: "profile/SET_CURRENT_PROFILE",
       profile,
     } as const),
 
   setCurrentProfilePhoto: (photos: PhotosType) =>
     ({
-      type: "SET_CURRENT_PROFILE_PHOTO",
+      type: "profile/SET_CURRENT_PROFILE_PHOTO",
       photos,
     } as const),
 
   setStatus: (status: string) =>
     ({
-      type: "SET_STATUS",
+      type: "profile/SET_STATUS",
       status,
     } as const),
   setEditMode: (editMode: boolean) =>
     ({
-      type: "SET_EDIT_MODE",
+      type: "profile/SET_EDIT_MODE",
       editMode,
     } as const),
 };
@@ -151,7 +151,7 @@ export const updateStatusThunk =
   };
 
 export const uploadPhotoThunk =
-  (photo: any): ThunkType =>
+  (photo: File): ThunkType =>
   (dispatch) => {
     profileAPI.uploadPhoto(photo).then((data) => {
       if (data.resultCode === resultCodes.success) {

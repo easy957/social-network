@@ -24,9 +24,10 @@ function appReducer(state = initialState, action: ActionsTypes): InitialStateTyp
 }
 
 export const actions = {
-  setInitialized: () => ({
-    type: "SET_INITIALIZED",
-  }),
+  setInitialized: () =>
+    ({
+      type: "SET_INITIALIZED",
+    } as const),
 };
 
 //Thunk

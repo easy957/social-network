@@ -20,7 +20,7 @@ type PropsType = {
   status: string | null;
   isOwner: boolean;
   editMode: boolean;
-  uploadPhoto: (photo: any) => void;
+  uploadPhoto: (photo: File) => void;
   toggleEditMode: (editMode: boolean) => void;
   updateProfile: (profile: ProfileType) => void;
   updateStatus: (status: string) => void;
@@ -38,9 +38,7 @@ function ProfileInfo({
 }: PropsType) {
   function setPhoto() {
     if (!profile?.photos) return;
-    return `${
-      profile.photos.large === null ? photoPlaceHolder : profile.photos.large
-    }`;
+    return `${profile.photos.large === null ? photoPlaceHolder : profile.photos.large}`;
   }
 
   function setLinks() {
@@ -50,12 +48,7 @@ function ProfileInfo({
       if (link[1]) {
         return (
           <li key={link[0]}>
-            <a
-              target="_blank"
-              className={s.link}
-              href={link[1]}
-              rel="noreferrer"
-            >
+            <a target="_blank" className={s.link} href={link[1]} rel="noreferrer">
               {link[0]}
             </a>
           </li>
@@ -123,11 +116,7 @@ function ProfileInfo({
           </div>
         </div>
         {editMode ? (
-          <ProfileReduxForm
-            initialValues={profile}
-            profile={profile}
-            onSubmit={handleEditProfileSubmit}
-          />
+          <ProfileReduxForm initialValues={profile} profile={profile} onSubmit={handleEditProfileSubmit} />
         ) : (
           <div>
             <h2 className={s.name}>{profile.fullName}</h2>

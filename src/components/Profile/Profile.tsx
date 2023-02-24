@@ -8,7 +8,7 @@ type PropsType = {
   status: string | null;
   isOwner: boolean;
   editMode: boolean;
-  uploadPhoto: (photo: any) => void;
+  uploadPhoto: (photo: File) => void;
   toggleEditMode: (editMode: boolean) => void;
   updateProfile: (profile: ProfileType) => void;
   updateStatus: (status: string) => void;

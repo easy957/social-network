@@ -26,7 +26,7 @@ type MapStatePropsType = {
 type MapDispatchPropsType = {
   getUserById: (id: number) => void;
   getStatusById: (id: number) => void;
-  uploadPhoto: (photo: any) => void;
+  uploadPhoto: (photo: File) => void;
   toggleEditMode: (editMode: boolean) => void;
   updateProfile: (profile: ProfileType) => void;
   updateStatus: (status: string) => void;
@@ -87,7 +87,7 @@ function mapStateToProps(state: AppStateType): MapStatePropsType {
   };
 }
 
-export default compose(
+export default compose<React.ComponentType>(
   withAuthRedirect,
   connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
     getUserById: getUserByIdThunk,
@@ -97,5 +97,5 @@ export default compose(
     toggleEditMode: actions.setEditMode,
     updateProfile: updateProfileThunk,
   }),
-  withRouter
+  withRouter<PropsType>
 )(ProfileContainer);

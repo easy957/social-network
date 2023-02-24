@@ -1,6 +1,9 @@
-import profileReducer, { addPost, deletePost } from "./profileReducer";
+import profileReducer, { InitialStateType, actions } from "./profileReducer";
 
-const initialState = {
+const initialState: InitialStateType = {
+  currentProfile: null,
+  status: null,
+  editMode: false,
   posts: [
     {
       id: 1,
@@ -22,7 +25,7 @@ const initialState = {
 
 it("posts length should be incremented", () => {
   // 1. initial data
-  const action = addPost("new post text");
+  const action = actions.addPost("new post text");
 
   // 2. action
   const newState = profileReducer(initialState, action);
@@ -33,7 +36,7 @@ it("posts length should be incremented", () => {
 
 it("last post text should be", () => {
   // 1. initial data
-  const action = addPost("new post text");
+  const action = actions.addPost("new post text");
 
   // 2. action
   const newState = profileReducer(initialState, action);
@@ -44,7 +47,7 @@ it("last post text should be", () => {
 
 it("after deleting length of posts should be decremented", () => {
   // 1. initial data
-  const action = deletePost(1);
+  const action = actions.deletePost(1);
 
   // 2. action
   const newState = profileReducer(initialState, action);
@@ -55,7 +58,7 @@ it("after deleting length of posts should be decremented", () => {
 
 it("after deleting length of posts should not be decremented, if id is incorrect", () => {
   // 1. initial data
-  const action = deletePost(20);
+  const action = actions.deletePost(20);
 
   // 2. action
   const newState = profileReducer(initialState, action);

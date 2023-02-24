@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import withAuthRedirect from "../../HOC/withAuthRedirect";
-import { getUsersThunk, toggleFollowThunk } from "../../redux/usersReducer";
+import { UsersFilterType, getUsersThunk, toggleFollowThunk } from "../../redux/usersReducer";
 import {
   getAreFetchingFollow,
   getCurrentPage,
@@ -15,29 +15,35 @@ import Users from "./Users";
 import { UserType } from "../../redux/types";
 import { AppStateType } from "../../redux/redux-store";
 
-class UsersContainer extends React.Component<
-  MapStatePropsType & MapDispatchPropsType
-> {
+class UsersContainer extends React.Component<MapStatePropsType & MapDispatchPropsType> {
   componentDidMount() {
     if (this.props.users.length === 0) {
-      this.props.getUsersThunk(this.props.currentPage, this.props.pageSize);
+      this.props.getUsersThunk(this.props.currentPage, this.props.pageSize, { term: "", friend: null });
     }
+  }
+
+  handlePageClick(page: number, pageSize: number) {
+    this.props.getUsersThunk(page, pageSize, this.props.filter);
+  }
+
+  handleFilterChange(filter: UsersFilterType) {
+    this.props.getUsersThunk(1, this.props.pageSize, filter);
   }
 
   render() {
     return (
-      <>
-        <Users
-          getCurrentPageUsers={this.props.getUsersThunk}
-          toggleFollow={this.props.toggleFollowThunk}
-          users={this.props.users}
-          currentPage={this.props.currentPage}
-          isLoading={this.props.isLoading}
-          areFetchingFollow={this.props.areFetchingFollow}
-          totalUsersCount={this.props.totalUsersCount}
-          pageSize={this.props.pageSize}
-        />
-      </>
+      <Users
+        handlePageClick={this.handlePageClick.bind(this)}
+        handleFilterChange={this.handleFilterChange.bind(this)}
+        toggleFollow={this.props.toggleFollowThunk}
+        users={this.props.users}
+        currentPage={this.props.currentPage}
+        isLoading={this.props.isLoading}
+        areFetchingFollow={this.props.areFetchingFollow}
+        totalUsersCount={this.props.totalUsersCount}
+        pageSize={this.props.pageSize}
+        filter={this.props.filter}
+      />
     );
   }
 }
@@ -48,10 +54,11 @@ type MapStatePropsType = {
   isLoading: boolean;
   areFetchingFollow: Array<number>;
   totalUsersCount: number;
+  filter: UsersFilterType;
 };
 
 type MapDispatchPropsType = {
-  getUsersThunk: (currentPage: number, pageSize: number) => void;
+  getUsersThunk: (pageNumber: number, pageSize: number, filter: UsersFilterType) => void;
   toggleFollowThunk: (id: number, followed: boolean) => void;
 };
 
@@ -64,16 +71,14 @@ function mapStateToProps(state: AppStateType): MapStatePropsType {
     currentPage: getCurrentPage(state),
     isLoading: getIsLoading(state),
     areFetchingFollow: getAreFetchingFollow(state),
+    filter: state.usersPage.filter,
   };
 }
 
-export default compose(
+export default compose<React.ComponentType>(
   withAuthRedirect,
-  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(
-    mapStateToProps,
-    {
-      getUsersThunk,
-      toggleFollowThunk,
-    }
-  )
+  connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
+    getUsersThunk,
+    toggleFollowThunk,
+  })
 )(UsersContainer);

@@ -9,20 +9,20 @@ import HeaderContainer from "./components/Header/HeaderContainer";
 import { connect } from "react-redux";
 import { setInitializedThunk } from "./redux/appReducer";
 import Loader from "./components/common/Loader";
+import { AppStateType } from "./redux/redux-store";
 
-const MessagesContainer = React.lazy(() =>
-  import("./components/Messages/MessagesContainer")
-);
-const UsersContainer = React.lazy(() =>
-  import("./components/Users/UsersContainer")
-);
-const ProfileContainer = React.lazy(() =>
-  import("./components/Profile/ProfileContainer")
-);
+const MessagesContainer = React.lazy(() => import("./components/Messages/MessagesContainer"));
+const UsersContainer = React.lazy(() => import("./components/Users/UsersContainer"));
+const ProfileContainer = React.lazy(() => import("./components/Profile/ProfileContainer"));
 const Login = React.lazy(() => import("./components/Login/Login"));
 
-class App extends React.Component {
-  catchAllUnhandlenErrors = (event) => {
+type MapStatePropsType = ReturnType<typeof mapStateToProps>;
+type MapDispatchPropsType = {
+  setInitialized: () => void;
+};
+
+class App extends React.Component<MapStatePropsType & MapDispatchPropsType> {
+  catchAllUnhandlenErrors = (event: { reason: string }) => {
     alert("Some error occured " + event.reason);
   };
   componentDidMount() {
@@ -30,10 +30,7 @@ class App extends React.Component {
     window.addEventListener("unhandledrejection", this.catchAllUnhandlenErrors);
   }
   componentWillUnmount() {
-    window.removeEventListener(
-      "unhandledrejection",
-      this.catchAllUnhandlenErrors
-    );
+    window.removeEventListener("unhandledrejection", this.catchAllUnhandlenErrors);
   }
   render() {
     if (!this.props.initialized) {
@@ -63,12 +60,12 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: AppStateType) {
   return {
     initialized: state.app.initialized,
   };
 }
 
-export default connect(mapStateToProps, {
+export default connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
   setInitialized: setInitializedThunk,
 })(App);

@@ -5,10 +5,14 @@ import { NavLink } from "react-router-dom";
 import Loader from "../common/Loader";
 import Paginator from "../common/Paginator/Paginator";
 import { UserType } from "../../redux/types";
+import UsersSearch from "./UsersSearch";
+import { UsersFilterType } from "../../redux/usersReducer";
 
 type PropsType = {
-  getCurrentPageUsers: (currentPage: number, pageSize: number) => void;
+  handlePageClick: (pageNumber: number, pageSize: number) => void;
+  handleFilterChange: (filter: UsersFilterType) => void;
   toggleFollow: (id: number, followed: boolean) => void;
+  filter: UsersFilterType;
   users: Array<UserType>;
   currentPage: number;
   isLoading: boolean;
@@ -18,7 +22,8 @@ type PropsType = {
 };
 
 function Users({
-  getCurrentPageUsers,
+  handlePageClick,
+  handleFilterChange,
   toggleFollow,
   users,
   currentPage,
@@ -26,6 +31,7 @@ function Users({
   areFetchingFollow,
   totalUsersCount,
   pageSize,
+  filter,
 }: PropsType) {
   function setButtonStatus(id: number) {
     return areFetchingFollow.some((userId) => userId === id);
@@ -34,11 +40,13 @@ function Users({
   return (
     <>
       <Paginator
-        handlePageClick={getCurrentPageUsers}
+        handlePageClick={handlePageClick}
         pageSize={pageSize}
         totalUsersCount={totalUsersCount}
         currentPage={currentPage}
       />
+
+      <UsersSearch filter={filter} searchUsers={handleFilterChange} />
 
       <div style={{ position: "relative" }}>
         {isLoading && <Loader />}
@@ -48,11 +56,7 @@ function Users({
               <li key={user.id} className={s.item}>
                 <div>
                   <NavLink to={`../profile/${user.id}`}>
-                    <img
-                      className={s.photo}
-                      src={user.photos.small ? user.photos.small : userPhoto}
-                      alt="Profile"
-                    />
+                    <img className={s.photo} src={user.photos.small ? user.photos.small : userPhoto} alt="Profile" />
                   </NavLink>
                   <button
                     disabled={setButtonStatus(user.id)}

@@ -16,7 +16,7 @@ type MapDispatchPropsType = {
   sendMessage: (message: string) => void;
 };
 
-export default compose(
+export default compose<React.ComponentType>(
   withAuthRedirect,
 
   connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {

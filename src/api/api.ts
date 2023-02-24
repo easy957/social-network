@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AuthLoginProps, ProfileType, UserType } from "../redux/types";
+import { UsersFilterType } from "../redux/usersReducer";
 
 const API = axios.create({
   withCredentials: true,
@@ -23,16 +24,16 @@ type UsersResponseType = {
   error: string;
 };
 
-type ToggleFollowResponseType = {
+export type ToggleFollowResponseType = {
   resultCode: resultCodes;
   messages: Array<string>;
   data: {};
 };
 
 export const usersAPI = {
-  async fetchUsers(currentPage = 1, pageSize = 10) {
+  async fetchUsers(currentPage = 1, pageSize = 10, filter: UsersFilterType) {
     const response = await API.get<UsersResponseType>(
-      `users?page=${currentPage}&count=${pageSize}`
+      `users?page=${currentPage}&count=${pageSize}&term=${filter.term}&friend=${filter.friend}`
     );
     return response.data;
   },
@@ -43,10 +44,8 @@ export const usersAPI = {
       return response.data;
     }
 
-    const response_1 = await API.delete<ToggleFollowResponseType>(
-      `follow/${id}`
-    );
-    return response_1.data;
+    const response = await API.delete<ToggleFollowResponseType>(`follow/${id}`);
+    return response.data;
   },
 };
 
@@ -76,34 +75,24 @@ export const profileAPI = {
     return response.data;
   },
   async updateStatus(status: string) {
-    const response = await API.put<UpdateProfileDataResponseType>(
-      `profile/status`,
-      {
-        status,
-      }
-    );
+    const response = await API.put<UpdateProfileDataResponseType>(`profile/status`, {
+      status,
+    });
     return response.data;
   },
   async updateProfile(profile: ProfileType) {
-    const response = await API.put<UpdateProfileDataResponseType>(
-      `profile`,
-      profile
-    );
+    const response = await API.put<UpdateProfileDataResponseType>(`profile`, profile);
     return response.data;
   },
 
-  async uploadPhoto(photo: any) {
+  async uploadPhoto(photo: File) {
     let data = new FormData();
     data.append("image", photo);
-    const response = await API.put<UpdateProfilePhotoResponseType>(
-      `profile/photo`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await API.put<UpdateProfilePhotoResponseType>(`profile/photo`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
 };
@@ -155,9 +144,7 @@ type GetCaptchaResponseType = { url: string };
 
 export const securityAPI = {
   async getCaptcha() {
-    const response = await API.get<GetCaptchaResponseType>(
-      "security/get-captcha-url"
-    );
+    const response = await API.get<GetCaptchaResponseType>("security/get-captcha-url");
     return response.data;
   },
 };

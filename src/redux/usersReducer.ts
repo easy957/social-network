@@ -29,7 +29,7 @@ export const actions = {
       totalUsersCount,
     } as const),
 
-  setCurrentPage: (currentPage: number) =>
+  setCurrentPage: (currentPage = 1) =>
     ({
       type: "users/SET_CURRENT_PAGE",
       currentPage,
@@ -40,9 +40,15 @@ export const actions = {
       type: "users/TOGGLE_IS_LOADING",
       isLoading,
     } as const),
+  setFilter: (payload: UsersFilterType) =>
+    ({
+      type: "users/SET_FILTER",
+      payload,
+    } as const),
 };
 
-type InitialStateType = typeof initialState;
+export type InitialStateType = typeof initialState;
+export type UsersFilterType = typeof initialState.filter;
 const initialState = {
   users: [] as Array<UserType>,
   pageSize: 20,
@@ -50,6 +56,10 @@ const initialState = {
   currentPage: 1,
   isLoading: false,
   areFetchingFollow: [] as Array<number>,
+  filter: {
+    term: "",
+    friend: null as null | boolean,
+  },
 };
 
 type ActionsTypes = InferActionsTypes<typeof actions>;
@@ -102,6 +112,13 @@ function usersReducer(state = initialState, action: ActionsTypes): InitialStateT
       return {
         ...state,
         isLoading: action.isLoading,
+      };
+    }
+
+    case "users/SET_FILTER": {
+      return {
+        ...state,
+        filter: action.payload,
         // isLoading: true,
       };
     }
@@ -116,10 +133,11 @@ function usersReducer(state = initialState, action: ActionsTypes): InitialStateT
 type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
 
 export const getUsersThunk =
-  (pageNumber = 1, pageSize = 10): ThunkType =>
+  (pageNumber: number, pageSize: number, filter: UsersFilterType): ThunkType =>
   (dispatch) => {
     dispatch(actions.toggleIsLoading(true));
-    usersAPI.fetchUsers(pageNumber, pageSize).then((data) => {
+    dispatch(actions.setFilter(filter));
+    usersAPI.fetchUsers(pageNumber, pageSize, filter).then((data) => {
       dispatch(actions.setCurrentPage(pageNumber));
       dispatch(actions.toggleIsLoading(false));
       dispatch(actions.setUsers(data.items));
@@ -129,12 +147,11 @@ export const getUsersThunk =
 
 export const toggleFollowThunk =
   (id: number, followed: boolean): ThunkType =>
-  (dispatch) => {
+  async (dispatch) => {
     dispatch(actions.toggleIsFetchingFollow(true, id));
-    usersAPI.fetchToggleFollow(followed, id).then(() => {
-      dispatch(actions.toggleFollow(id));
-      dispatch(actions.toggleIsFetchingFollow(false, id));
-    });
+    await usersAPI.fetchToggleFollow(followed, id);
+    dispatch(actions.toggleFollow(id));
+    dispatch(actions.toggleIsFetchingFollow(false, id));
   };
 
 export default usersReducer;

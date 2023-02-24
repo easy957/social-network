@@ -1,10 +1,11 @@
 import { InferActionsTypes } from "./redux-store";
 
 export const actions = {
-  sendMessage: (message: string) => ({
-    type: "SEND_MESSAGE",
-    message,
-  }),
+  sendMessage: (message: string) =>
+    ({
+      type: "messages/SEND_MESSAGE",
+      message,
+    } as const),
 };
 
 // type UserType = {
@@ -60,7 +61,7 @@ type ActionsTypes = InferActionsTypes<typeof actions>;
 
 function messagesReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case "SEND_MESSAGE":
+    case "messages/SEND_MESSAGE":
       const newMessage = {
         id: state.messages.length + 1,
         text: action.message,

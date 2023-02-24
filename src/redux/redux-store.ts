@@ -21,18 +21,13 @@ const reducers = combineReducers({
 // @ts-ignore
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(
-  reducers,
-  composeEnhancers(applyMiddleware(ThunkMiddleware))
-);
+const store = createStore(reducers, composeEnhancers(applyMiddleware(ThunkMiddleware)));
 
 export type AppStateType = ReturnType<typeof store.getState>;
 export type AppDispatchType = typeof store.dispatch;
 
-type PropertiesType<T> = T extends { [key: string]: infer U } ? U : never;
-export type InferActionsTypes<
-  T extends { [key: string]: (...args: any) => any }
-> = ReturnType<PropertiesType<T>>;
+export type InferActionsTypes<T> = T extends { [key: string]: (...args: any) => infer U } ? U : never;
+
 // @ts-ignore
 window.store = store;
 export default store;

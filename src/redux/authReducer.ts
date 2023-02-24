@@ -2,7 +2,7 @@ import { stopSubmit } from "redux-form";
 import { authAPI, profileAPI, resultCodeForCaptcha, resultCodes, securityAPI } from "../api/api";
 import { AuthLoginProps } from "./types";
 import { ThunkAction } from "redux-thunk";
-import { AppStateType } from "./redux-store";
+import { AppStateType, InferActionsTypes } from "./redux-store";
 
 const initialState = {
   id: null as null | number,
@@ -14,32 +14,32 @@ const initialState = {
 };
 
 export type InitialStateType = typeof initialState;
-type ActionsTypes = any;
+type ActionsTypes = InferActionsTypes<typeof actions>;
 
 function authReducer(state = initialState, action: ActionsTypes): InitialStateType {
   switch (action.type) {
-    case "SET_USER_DATA":
+    case "auth/SET_USER_DATA":
       return {
         ...state,
         ...action.data,
         isAuth: true,
       };
-    case "CLEAR_USER_DATA":
+    case "auth/CLEAR_USER_DATA":
       return initialState;
 
-    case "SET_USER_ID":
+    case "auth/SET_USER_ID":
       return {
         ...state,
         id: action.id,
         isAuth: true,
       };
 
-    case "SET_USER_PHOTO":
+    case "auth/SET_USER_PHOTO":
       return {
         ...state,
         photo: action.photo,
       };
-    case "SET_CAPTCHA":
+    case "auth/SET_CAPTCHA":
       return {
         ...state,
         captcha: action.captcha,
@@ -55,28 +55,33 @@ function authReducer(state = initialState, action: ActionsTypes): InitialStateTy
 type UserDataType = { email: string; id: number; login: string };
 
 export const actions = {
-  setUserData: (data: UserDataType) => ({
-    type: "SET_USER_DATA",
-    data,
-  }),
+  setUserData: (data: UserDataType) =>
+    ({
+      type: "auth/SET_USER_DATA",
+      data,
+    } as const),
 
-  clearUserData: () => ({
-    type: "CLEAR_USER_DATA",
-  }),
-  setUserId: (id: number) => ({
-    type: "SET_USER_ID",
-    id,
-  }),
+  clearUserData: () =>
+    ({
+      type: "auth/CLEAR_USER_DATA",
+    } as const),
+  setUserId: (id: number) =>
+    ({
+      type: "auth/SET_USER_ID",
+      id,
+    } as const),
 
-  setUserPhoto: (photo: string | null) => ({
-    type: "SET_USER_PHOTO",
-    photo,
-  }),
+  setUserPhoto: (photo: string | null) =>
+    ({
+      type: "auth/SET_USER_PHOTO",
+      photo,
+    } as const),
 
-  setCaptcha: (captcha: string) => ({
-    type: "SET_CAPTCHA",
-    captcha,
-  }),
+  setCaptcha: (captcha: string) =>
+    ({
+      type: "auth/SET_CAPTCHA",
+      captcha,
+    } as const),
 };
 
 //Thunk
