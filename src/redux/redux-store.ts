@@ -1,12 +1,14 @@
-import { applyMiddleware, combineReducers, createStore, compose } from "redux";
+import { applyMiddleware, combineReducers, createStore, compose, Action } from "redux";
 import authReducer from "./authReducer";
 import messagesReducer from "./messagesReducer";
 import profileReducer from "./profileReducer";
 import sidebarReducer from "./sidebarReducer";
 import usersReducer from "./usersReducer";
-import ThunkMiddleware from "redux-thunk";
+import ThunkMiddleware, { ThunkAction } from "redux-thunk";
 import appReducer from "./appReducer";
 import { reducer as formReducer } from "redux-form";
+import { TypedUseSelectorHook, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const reducers = combineReducers({
   profilePage: profileReducer,
@@ -23,8 +25,14 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(ThunkMiddleware)));
 
-export type AppStateType = ReturnType<typeof store.getState>;
+type roodReducerType = typeof reducers;
+export type AppStateType = ReturnType<roodReducerType>;
 export type AppDispatchType = typeof store.dispatch;
+
+export const useAppDispatch: () => AppDispatchType = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<AppStateType> = useSelector;
+
+export type BaseThunkType<A extends Action = Action, R = Promise<void>> = ThunkAction<R, AppStateType, unknown, A>;
 
 export type InferActionsTypes<T> = T extends { [key: string]: (...args: any) => infer U } ? U : never;
 

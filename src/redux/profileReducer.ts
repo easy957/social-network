@@ -122,12 +122,12 @@ export const actions = {
 
 // THUNK
 
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
 
 export const getUserByIdThunk =
   (userId: number | null): ThunkType =>
   (dispatch) => {
-    profileAPI.fetchProfile(userId).then((data) => {
+    return profileAPI.fetchProfile(userId).then((data) => {
       dispatch(actions.setCurrentProfile(data));
     });
   };
@@ -135,7 +135,7 @@ export const getUserByIdThunk =
 export const getStatusByIdThunk =
   (userId: number): ThunkType =>
   (dispatch) => {
-    profileAPI.fetchStatus(userId).then((data) => {
+    return profileAPI.fetchStatus(userId).then((data) => {
       dispatch(actions.setStatus(data));
     });
   };
@@ -143,7 +143,7 @@ export const getStatusByIdThunk =
 export const updateStatusThunk =
   (status: string): ThunkType =>
   (dispatch) => {
-    profileAPI.updateStatus(status).then((data) => {
+    return profileAPI.updateStatus(status).then((data) => {
       if (data.resultCode === resultCodes.success) {
         dispatch(actions.setStatus(status));
       }
@@ -153,7 +153,7 @@ export const updateStatusThunk =
 export const uploadPhotoThunk =
   (photo: File): ThunkType =>
   (dispatch) => {
-    profileAPI.uploadPhoto(photo).then((data) => {
+    return profileAPI.uploadPhoto(photo).then((data) => {
       if (data.resultCode === resultCodes.success) {
         dispatch(actions.setCurrentProfilePhoto(data.data.photos));
       }
@@ -165,7 +165,7 @@ export const uploadPhotoThunk =
 export const updateProfileThunk =
   (profile: ProfileType): ThunkAction<void, AppStateType, unknown, ActionsTypes | FormAction> =>
   (dispatch, getState: () => AppStateType) => {
-    profileAPI.updateProfile(profile).then((data) => {
+    return profileAPI.updateProfile(profile).then((data) => {
       const userId = getState().auth.id;
       if (data.resultCode === 0) {
         dispatch(actions.setEditMode(false));

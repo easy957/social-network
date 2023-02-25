@@ -86,7 +86,7 @@ export const actions = {
 
 //Thunk
 
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
 
 export const fetchMeThunk = (): ThunkType => async (dispatch) => {
   const data = await authAPI.me();
@@ -101,7 +101,7 @@ export const fetchMeThunk = (): ThunkType => async (dispatch) => {
 export const loginThunk =
   (loginData: AuthLoginProps): ThunkType =>
   (dispatch) => {
-    authAPI.login(loginData).then((data) => {
+    return authAPI.login(loginData).then((data) => {
       if (data.resultCode === resultCodes.success) {
         dispatch(fetchMeThunk());
       } else {
@@ -115,7 +115,7 @@ export const loginThunk =
   };
 
 export const logoutThunk = (): ThunkType => (dispatch) => {
-  authAPI.logout().then((data) => {
+  return authAPI.logout().then((data) => {
     if (data.resultCode === resultCodes.success) {
       dispatch(actions.clearUserData());
     }
@@ -123,7 +123,7 @@ export const logoutThunk = (): ThunkType => (dispatch) => {
 };
 
 export const getCaptchaThunk = (): ThunkType => (dispatch) => {
-  securityAPI.getCaptcha().then((data) => {
+  return securityAPI.getCaptcha().then((data) => {
     dispatch(actions.setCaptcha(data.url));
   });
 };

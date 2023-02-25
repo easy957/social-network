@@ -1,6 +1,6 @@
-import { ThunkAction } from "redux-thunk";
+import { AnyAction } from "redux";
 import { usersAPI } from "../api/api";
-import { AppStateType, InferActionsTypes } from "./redux-store";
+import { BaseThunkType, InferActionsTypes } from "./redux-store";
 import { UserType } from "./types";
 
 export const actions = {
@@ -130,14 +130,14 @@ function usersReducer(state = initialState, action: ActionsTypes): InitialStateT
 
 // THUNK
 
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+type ThunkType = BaseThunkType<AnyAction>;
 
 export const getUsersThunk =
   (pageNumber: number, pageSize: number, filter: UsersFilterType): ThunkType =>
-  (dispatch) => {
+  (dispatch, getState) => {
     dispatch(actions.toggleIsLoading(true));
     dispatch(actions.setFilter(filter));
-    usersAPI.fetchUsers(pageNumber, pageSize, filter).then((data) => {
+    return usersAPI.fetchUsers(pageNumber, pageSize, filter).then((data) => {
       dispatch(actions.setCurrentPage(pageNumber));
       dispatch(actions.toggleIsLoading(false));
       dispatch(actions.setUsers(data.items));

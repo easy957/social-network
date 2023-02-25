@@ -1,41 +1,51 @@
-import React from "react";
 import s from "./Users.module.css";
 import userPhoto from "../../assets/images/profilePicture.webp";
 import { NavLink } from "react-router-dom";
 import Loader from "../common/Loader";
 import Paginator from "../common/Paginator/Paginator";
-import { UserType } from "../../redux/types";
 import UsersSearch from "./UsersSearch";
-import { UsersFilterType } from "../../redux/usersReducer";
+import { UsersFilterType, getUsersThunk, toggleFollowThunk } from "../../redux/usersReducer";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  getAreFetchingFollow,
+  getCurrentPage,
+  getIsLoading,
+  getPageSize,
+  getTotalUsersCount,
+  getUsers,
+  getUsersFilter,
+} from "../../redux/usersSelector";
+import { useEffect } from "react";
 
-type PropsType = {
-  handlePageClick: (pageNumber: number, pageSize: number) => void;
-  handleFilterChange: (filter: UsersFilterType) => void;
-  toggleFollow: (id: number, followed: boolean) => void;
-  filter: UsersFilterType;
-  users: Array<UserType>;
-  currentPage: number;
-  isLoading: boolean;
-  areFetchingFollow: Array<number>;
-  totalUsersCount: number;
-  pageSize: number;
-};
+function UsersPage() {
+  const dispatch = useDispatch();
 
-function Users({
-  handlePageClick,
-  handleFilterChange,
-  toggleFollow,
-  users,
-  currentPage,
-  isLoading,
-  areFetchingFollow,
-  totalUsersCount,
-  pageSize,
-  filter,
-}: PropsType) {
+  const users = useSelector(getUsers);
+  const currentPage = useSelector(getCurrentPage);
+  const isLoading = useSelector(getIsLoading);
+  const filter = useSelector(getUsersFilter);
+  const areFetchingFollow = useSelector(getAreFetchingFollow);
+  const totalUsersCount = useSelector(getTotalUsersCount);
+  const pageSize = useSelector(getPageSize);
+
   function setButtonStatus(id: number) {
     return areFetchingFollow.some((userId) => userId === id);
   }
+
+  function handlePageClick(page: number, pageSize: number) {
+    dispatch<any>(getUsersThunk(page, pageSize, filter));
+  }
+
+  function handleFilterChange(filter: UsersFilterType) {
+    dispatch<any>(getUsersThunk(1, pageSize, filter));
+  }
+
+  useEffect(() => {
+    if (users.length === 0) {
+      dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
+    }
+  }, [currentPage, dispatch, filter, pageSize, users.length]);
 
   return (
     <>
@@ -62,7 +72,7 @@ function Users({
                     disabled={setButtonStatus(user.id)}
                     className={s.button}
                     onClick={() => {
-                      toggleFollow(user.id, user.followed);
+                      dispatch<any>(toggleFollowThunk(user.id, user.followed));
                     }}
                   >
                     {user.followed ? "Unfollow" : "Follow"}
@@ -84,4 +94,4 @@ function Users({
   );
 }
 
-export default Users;
+export default UsersPage;

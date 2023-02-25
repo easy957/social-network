@@ -10,9 +10,10 @@ import { connect } from "react-redux";
 import { setInitializedThunk } from "./redux/appReducer";
 import Loader from "./components/common/Loader";
 import { AppStateType } from "./redux/redux-store";
+// import { UsersPage } from "./components/Users/UsersPage";
 
 const MessagesContainer = React.lazy(() => import("./components/Messages/MessagesContainer"));
-const UsersContainer = React.lazy(() => import("./components/Users/UsersContainer"));
+const UsersPage = React.lazy(() => import("./components/Users/UsersPage"));
 const ProfileContainer = React.lazy(() => import("./components/Profile/ProfileContainer"));
 const Login = React.lazy(() => import("./components/Login/Login"));
 
@@ -46,7 +47,7 @@ class App extends React.Component<MapStatePropsType & MapDispatchPropsType> {
               <Route path="login" element={<Login />} />
               <Route path="/" element={<Navigate to="profile" replace />} />
               <Route path="profile/:userId?" element={<ProfileContainer />} />
-              <Route path="users" element={<UsersContainer />} />
+              <Route path="users" element={<UsersPage />} />
               <Route path="messages/*" element={<MessagesContainer />} />
               <Route path="news" element={<News />} />
               <Route path="music" element={<Music />} />

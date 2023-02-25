@@ -31,11 +31,11 @@ export const actions = {
 };
 
 //Thunk
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsTypes>;
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>;
 
 export const setInitializedThunk = (): ThunkType => (dispatch) => {
   const promiseMe = dispatch(fetchMeThunk());
-  Promise.all([promiseMe]).then(() => {
+  return Promise.all([promiseMe]).then(() => {
     dispatch(actions.setInitialized());
   });
 };
