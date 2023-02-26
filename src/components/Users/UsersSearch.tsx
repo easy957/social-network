@@ -30,11 +30,11 @@ function UsersSearch({ searchUsers, filter }: PropTypes) {
 
   const initialValues: FormTypes = {
     term: filter.term,
-    friend: filter.friend === true ? "true" : filter.friend === false ? "false" : "null",
+    friend: filter.friend === null ? "null" : filter.friend === true ? "true" : "false",
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik enableReinitialize initialValues={initialValues} onSubmit={handleSubmit}>
       {({ isSubmitting, submitForm, resetForm, setFieldValue }) => (
         <Form onChange={submitForm}>
           <Field type="text" name="term" placeholder="Search by name..." />

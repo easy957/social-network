@@ -1,10 +1,10 @@
 import s from "./Users.module.css";
 import userPhoto from "../../assets/images/profilePicture.webp";
-import { NavLink } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import Loader from "../common/Loader";
 import Paginator from "../common/Paginator/Paginator";
 import UsersSearch from "./UsersSearch";
-import { UsersFilterType, getUsersThunk, toggleFollowThunk } from "../../redux/usersReducer";
+import { UsersFilterType, actions, getUsersThunk, toggleFollowThunk } from "../../redux/usersReducer";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
@@ -16,7 +16,7 @@ import {
   getUsers,
   getUsersFilter,
 } from "../../redux/usersSelector";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 function UsersPage() {
   const dispatch = useDispatch();
@@ -28,6 +28,8 @@ function UsersPage() {
   const areFetchingFollow = useSelector(getAreFetchingFollow);
   const totalUsersCount = useSelector(getTotalUsersCount);
   const pageSize = useSelector(getPageSize);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   function setButtonStatus(id: number) {
     return areFetchingFollow.some((userId) => userId === id);
@@ -41,17 +43,53 @@ function UsersPage() {
     dispatch<any>(getUsersThunk(1, pageSize, filter));
   }
 
-  // First Load Fetch
-
-  const onFirstLoad = useCallback(() => {
-    dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
-  }, [currentPage, dispatch, filter, pageSize]);
+  // FIRST LOAD
 
   useEffect(() => {
     if (users.length === 0) {
-      onFirstLoad();
+      dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
     }
-  }, [onFirstLoad, users.length]);
+  }, [currentPage, dispatch, filter, pageSize, users.length]);
+
+  // BIND STATE TO SEARCH PARAMS
+
+  useEffect(() => {
+    searchParams.get("page") && dispatch(actions.setCurrentPage(Number(searchParams.get("page"))));
+
+    let newFilter: UsersFilterType = {
+      friend: null,
+      term: "",
+    };
+
+    if (searchParams.get("term")) {
+      newFilter = {
+        ...newFilter,
+        term: searchParams.get("term") as string,
+      };
+    }
+
+    if (searchParams.get("friend")) {
+      newFilter = {
+        ...newFilter,
+        friend: searchParams.get("friend") === "null" ? null : searchParams.get("friend") === "true" ? true : false,
+      };
+    }
+
+    if (searchParams.get("term") ?? searchParams.get("friend")) {
+      dispatch(actions.setFilter(newFilter));
+    }
+  }, [dispatch, searchParams]);
+
+  // BIND SEARCH PARAMS TO STATE
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      filter.friend !== null ? prev.set("friend", filter.friend === true ? "true" : "false") : prev.delete("friend");
+      filter.term ? prev.set("term", filter.term) : prev.delete("term");
+      currentPage !== 1 ? prev.set("page", currentPage.toString()) : prev.delete("page");
+      return prev;
+    });
+  }, [currentPage, filter.friend, filter.term, setSearchParams]);
 
   return (
     <>
