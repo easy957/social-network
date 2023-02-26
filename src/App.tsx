@@ -14,7 +14,7 @@ import { AppStateType } from "./redux/redux-store";
 
 const MessagesContainer = React.lazy(() => import("./components/Messages/MessagesContainer"));
 const UsersPage = React.lazy(() => import("./components/Users/UsersPage"));
-const ProfileContainer = React.lazy(() => import("./components/Profile/ProfileContainer"));
+const ProfilePage = React.lazy(() => import("./components/Profile/ProfilePage"));
 const Login = React.lazy(() => import("./components/Login/Login"));
 
 type MapStatePropsType = ReturnType<typeof mapStateToProps>;
@@ -46,7 +46,7 @@ class App extends React.Component<MapStatePropsType & MapDispatchPropsType> {
             <Routes>
               <Route path="login" element={<Login />} />
               <Route path="/" element={<Navigate to="profile" replace />} />
-              <Route path="profile/:userId?" element={<ProfileContainer />} />
+              <Route path="profile/:userId?" element={<ProfilePage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="messages/*" element={<MessagesContainer />} />
               <Route path="news" element={<News />} />

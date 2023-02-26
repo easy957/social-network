@@ -3,10 +3,11 @@ import s from "./ProfileInfo.module.css";
 
 type PropsType = {
   status: string | null;
+  isOwner: boolean;
   updateStatus: (value: string) => void;
 };
 
-function Status({ status, updateStatus }: PropsType) {
+function Status({ status, updateStatus, isOwner }: PropsType) {
   const [editMode, setEditMode] = useState(false);
   const [value, setValue] = useState(status ? status : "");
 
@@ -15,6 +16,8 @@ function Status({ status, updateStatus }: PropsType) {
   }, [status]);
 
   function toggleEditMode() {
+    if (!isOwner) return;
+
     if (editMode && status !== value) {
       updateStatus(value);
     }
@@ -29,18 +32,12 @@ function Status({ status, updateStatus }: PropsType) {
     <>
       {!editMode && (
         <p onDoubleClick={toggleEditMode} className={s.status}>
-          {status || "(double click to edit your status)"}
+          {status || (isOwner && "(double click to edit your status)")}
         </p>
       )}
 
       {editMode && (
-        <input
-          value={value}
-          onInput={onStatusInput}
-          onBlur={toggleEditMode}
-          className={s.statusInput}
-          autoFocus
-        />
+        <input value={value} onInput={onStatusInput} onBlur={toggleEditMode} className={s.statusInput} autoFocus />
       )}
     </>
   );

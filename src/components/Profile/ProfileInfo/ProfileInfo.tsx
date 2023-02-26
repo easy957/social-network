@@ -5,7 +5,20 @@ import Loader from "../../common/Loader";
 import ProfileEditForm from "./ProfileEditForm";
 import { reduxForm } from "redux-form";
 import { ProfileType } from "../../../redux/types";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
+import { useAppDispatch } from "../../../redux/redux-store";
+import {
+  actions,
+  getStatusByIdThunk,
+  getUserByIdThunk,
+  updateProfileThunk,
+  updateStatusThunk,
+  uploadPhotoThunk,
+} from "../../../redux/profileReducer";
+import { useSelector } from "react-redux";
+import { getProfile, getStatus, getEditMode } from "../../../redux/profileSelector";
+import { useParams } from "react-router-dom";
+import { getMyId } from "../../../redux/authSelector";
 
 type FormPropsType = {
   profile: ProfileType;
@@ -15,32 +28,52 @@ const ProfileReduxForm = reduxForm<ProfileType, FormPropsType>({
   form: "edit-profile",
 })(ProfileEditForm);
 
-type PropsType = {
-  profile: ProfileType | null;
-  status: string | null;
-  isOwner: boolean;
-  editMode: boolean;
-  uploadPhoto: (photo: File) => void;
-  toggleEditMode: (editMode: boolean) => void;
-  updateProfile: (profile: ProfileType) => void;
-  updateStatus: (status: string) => void;
-};
+function ProfileInfo() {
+  const params = useParams();
+  const isOwner = !params.userId;
+  const profile = useSelector(getProfile);
+  const status = useSelector(getStatus);
+  const editMode = useSelector(getEditMode);
+  const myId = useSelector(getMyId);
 
-function ProfileInfo({
-  updateStatus,
-  profile,
-  status,
-  uploadPhoto,
-  isOwner,
-  editMode,
-  toggleEditMode,
-  updateProfile,
-}: PropsType) {
+  // dispatch actions
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    let userId: number | null;
+    params.userId ? (userId = Number(params.userId)) : (userId = null);
+
+    if (!userId) {
+      userId = myId;
+      if (!userId) {
+        return;
+      }
+    }
+
+    dispatch<any>(getUserByIdThunk(userId));
+    dispatch<any>(getStatusByIdThunk(userId));
+  }, [dispatch, myId, params.userId]);
+
+  function handlePhotoChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files?.length) {
+      dispatch<any>(uploadPhotoThunk(e.target.files[0]));
+    }
+  }
+  function handleEditProfileSubmit(formData: ProfileType) {
+    dispatch<any>(updateProfileThunk(formData));
+  }
+  function handleStatusChange(newStatus: string) {
+    dispatch<any>(updateStatusThunk(newStatus));
+  }
+  function toggleEditMode() {
+    dispatch(actions.setEditMode(!editMode));
+  }
+
+  // visuals
   function setPhoto() {
     if (!profile?.photos) return;
     return `${profile.photos.large === null ? photoPlaceHolder : profile.photos.large}`;
   }
-
   function setLinks() {
     if (!profile) return;
     const entries = Object.entries(profile.contacts);
@@ -57,7 +90,6 @@ function ProfileInfo({
       return undefined;
     });
   }
-
   function setLookingForJob() {
     if (!profile) return;
     if (profile.lookingForAJob) {
@@ -70,27 +102,12 @@ function ProfileInfo({
     }
   }
 
-  function handlePhotoChange(e: ChangeEvent<HTMLInputElement>) {
-    if (e.target.files?.length) {
-      uploadPhoto(e.target.files[0]);
-    }
-  }
-
-  function handleEditProfileSubmit(formData: ProfileType) {
-    updateProfile(formData);
-  }
-
   if (!profile) {
     return <Loader />;
   }
 
   return (
     <>
-      {/* <img
-      className={s.wallpaper}
-      src="https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg"
-      alt="Profile Background"
-    /> */}
       <div className={s.profile}>
         <div>
           <img className={s.photo} src={setPhoto()} alt="Profile" />
@@ -102,12 +119,7 @@ function ProfileInfo({
                   <input type="file" onChange={handlePhotoChange} />
                 </label>
                 {!editMode && (
-                  <button
-                    className={s.editProfile}
-                    onClick={() => {
-                      toggleEditMode(!editMode);
-                    }}
-                  >
+                  <button className={s.editProfile} onClick={toggleEditMode}>
                     Edit Profile
                   </button>
                 )}
@@ -120,7 +132,7 @@ function ProfileInfo({
         ) : (
           <div>
             <h2 className={s.name}>{profile.fullName}</h2>
-            <Status updateStatus={updateStatus} status={status} />
+            <Status isOwner={isOwner} updateStatus={handleStatusChange} status={status} />
             <ul className={s.links}>{setLinks()}</ul>
             <p className={s.aboutMe}>{profile.aboutMe}</p>
             {setLookingForJob()}

@@ -16,7 +16,7 @@ import {
   getUsers,
   getUsersFilter,
 } from "../../redux/usersSelector";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 function UsersPage() {
   const dispatch = useDispatch();
@@ -41,11 +41,17 @@ function UsersPage() {
     dispatch<any>(getUsersThunk(1, pageSize, filter));
   }
 
+  // First Load Fetch
+
+  const onFirstLoad = useCallback(() => {
+    dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
+  }, [currentPage, dispatch, filter, pageSize]);
+
   useEffect(() => {
     if (users.length === 0) {
-      dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
+      onFirstLoad();
     }
-  }, [currentPage, dispatch, filter, pageSize, users.length]);
+  }, [onFirstLoad, users.length]);
 
   return (
     <>
