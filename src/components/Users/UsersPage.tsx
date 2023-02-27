@@ -16,7 +16,7 @@ import {
   getUsers,
   getUsersFilter,
 } from "../../redux/usersSelector";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 function UsersPage() {
   const dispatch = useDispatch();
@@ -75,11 +75,19 @@ function UsersPage() {
 
   useEffect(() => {
     setSearchParams((prev) => {
-      filter.friend !== null ? prev.set("friend", filter.friend === true ? "true" : "false") : prev.delete("friend");
-      filter.term ? prev.set("term", filter.term) : prev.delete("term");
+      newFilter.current.friend !== null
+        ? prev.set("friend", newFilter.current.friend === true ? "true" : "false")
+        : prev.delete("friend");
+      newFilter.current.term ? prev.set("term", newFilter.current.term) : prev.delete("term");
       currentPage !== 1 ? prev.set("page", currentPage.toString()) : prev.delete("page");
       return prev;
     });
+    // setSearchParams((prev) => {
+    //   filter.friend !== null ? prev.set("friend", filter.friend === true ? "true" : "false") : prev.delete("friend");
+    //   filter.term ? prev.set("term", filter.term) : prev.delete("term");
+    //   currentPage !== 1 ? prev.set("page", currentPage.toString()) : prev.delete("page");
+    //   return prev;
+    // });
   }, [currentPage, filter.friend, filter.term, setSearchParams]);
 
   return (
