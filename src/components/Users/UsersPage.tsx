@@ -16,7 +16,7 @@ import {
   getUsers,
   getUsersFilter,
 } from "../../redux/usersSelector";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 function UsersPage() {
   const dispatch = useDispatch();
@@ -43,42 +43,33 @@ function UsersPage() {
     dispatch<any>(getUsersThunk(1, pageSize, filter));
   }
 
-  // FIRST LOAD
-
-  useEffect(() => {
-    if (users.length === 0) {
-      dispatch<any>(getUsersThunk(currentPage, pageSize, filter));
-    }
-  }, [currentPage, dispatch, filter, pageSize, users.length]);
-
   // BIND STATE TO SEARCH PARAMS
 
+  const actualPage = useRef(searchParams.get("page"));
+  const newFilter = useRef({
+    friend: null as null | boolean,
+    term: "",
+  });
+
   useEffect(() => {
-    searchParams.get("page") && dispatch(actions.setCurrentPage(Number(searchParams.get("page"))));
-
-    let newFilter: UsersFilterType = {
-      friend: null,
-      term: "",
-    };
-
     if (searchParams.get("term")) {
-      newFilter = {
-        ...newFilter,
+      newFilter.current = {
+        ...newFilter.current,
         term: searchParams.get("term") as string,
       };
     }
 
     if (searchParams.get("friend")) {
-      newFilter = {
-        ...newFilter,
+      newFilter.current = {
+        ...newFilter.current,
         friend: searchParams.get("friend") === "null" ? null : searchParams.get("friend") === "true" ? true : false,
       };
     }
 
-    if (searchParams.get("term") ?? searchParams.get("friend")) {
-      dispatch(actions.setFilter(newFilter));
+    if (users.length === 0) {
+      dispatch<any>(getUsersThunk(actualPage.current ? Number(actualPage.current) : 1, pageSize, newFilter.current));
     }
-  }, [dispatch, searchParams]);
+  }, [dispatch, pageSize, searchParams, users.length]);
 
   // BIND SEARCH PARAMS TO STATE
 
